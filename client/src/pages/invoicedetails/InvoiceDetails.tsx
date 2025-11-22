@@ -86,65 +86,70 @@ const InvoiceDetails = () => {
                 </address>
               </div>
             </article>
-            <section className=''>
+            <section className='py-6'>
               <Table className='rounded-xl border border-separate border-spacing-0 overflow-hidden'>
                 <TableHeader className=''>
                   <TableRow className='border-none'>
-                    <TableHead className='px-8 hidden md:table-cell'>
+                    <TableHead className='px-4  hidden md:px-8 md:table-cell'>
                       Item name
                     </TableHead>
-                    <TableHead className='px-8 hidden md:table-cell'>
+                    <TableHead className='px-4 hidden md:table-cell md:px-8'>
                       Quantity
                     </TableHead>
-                    <TableHead className='px-8 hidden md:table-cell'>
+                    <TableHead className='px-4 hidden md:table-cell md:px-8'>
                       Price
                     </TableHead>
-                    <TableHead className='px-8 text-right hidden md:table-cell'>
+                    <TableHead className='px-4 text-right hidden md:table-cell md:px-8'>
                       Total
                     </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody className=''>
                   <TableRow className='h-8 border-none'>
-                    <TableCell className='font-medium px-8'>
+                    <TableCell className='font-medium px-4 md:px-8 font-wrap'>
                       Brand Guidelines
                     </TableCell>
+                    <TableCell className='table-cells md:hidden '></TableCell>
                     <TableCell className='table-cells md:hidden'></TableCell>
-                    <TableCell className='table-cells md:hidden'></TableCell>
-                    <TableCell className='px-8 hidden md:table-cell'>
+                    <TableCell className='px-4 hidden md:table-cell md:px-8'>
                       1
                     </TableCell>
-                    <TableCell className='px-8 hidden md:table-cell'>
+                    <TableCell className='px-4 hidden md:table-cell md:px-8'>
                       £250.00
                     </TableCell>
-                    <TableCell className='text-right px-8'> £250.00</TableCell>
+                    <TableCell className='text-right px-4 md:px-8'>
+                      {' '}
+                      £250.00
+                    </TableCell>
                   </TableRow>
 
                   <TableRow className='h-8 border-none'>
-                    <TableCell className='font-medium px-8'>
+                    <TableCell className='font-medium px-4 md:px-8'>
                       Brand Guidelines
                     </TableCell>
                     <TableCell className='table-cells md:hidden'></TableCell>
                     <TableCell className='table-cells md:hidden'></TableCell>
-                    <TableCell className='px-8 hidden md:table-cell '>
+                    <TableCell className='px-4 hidden md:table-cell md:px-8'>
                       1
                     </TableCell>
-                    <TableCell className=' px-8 hidden md:table-cell'>
+                    <TableCell className=' px-4 hidden md:table-cell md:px-8'>
                       £250.00
                     </TableCell>
-                    <TableCell className='text-right px-8 '> £250.00</TableCell>
+                    <TableCell className='text-right px-4 md:px-8 '>
+                      £250.00
+                    </TableCell>
                   </TableRow>
 
-                  <TableRow className='bg-black '>
+                  <TableRow className='bg-black'>
                     <TableCell
                       colSpan={2}
-                      className='font-medium col-span-2 px-8'>
+                      className='font-medium col-span-2 px-4 md:px-8'>
                       Amount due
                     </TableCell>
 
                     <TableCell
                       colSpan={2}
-                      className='text-right font-bold text-3xl py-6 px-8'>
+                      className='text-right font-bold text-3xl py-6 px-4 md:px-8'>
                       £250.00
                     </TableCell>
                   </TableRow>
