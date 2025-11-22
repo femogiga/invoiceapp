@@ -9,16 +9,25 @@ import {
 import { ChevronLeft } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 const InvoiceDetails = () => {
   return (
-    <main className='col-span-12 md:col-span-10 text-start'>
-      <section className='pb-6'>
+    <main className='col-span-12 md:col-span-10 text-start '>
+      <section className='pb-6 mt-4'>
         <Link to='/invoices' className='flex gap-x-2 items-center '>
           <ChevronLeft /> <span>Go back</span>
         </Link>
       </section>
-      <section>
+      <section className='mb-6'>
         <Card>
           <CardContent className='flex justify-between'>
             <div className='flex gap-x-4 items-center'>
@@ -35,8 +44,8 @@ const InvoiceDetails = () => {
 
       <section>
         <Card>
-          <CardContent className=''>
-            <CardContent className='grid  gap-y-6 grid-cols-2  md:grid-cols-3'>
+          <CardContent className='grid gap-y-10'>
+            <article className='grid  gap-y-6 grid-cols-2  md:grid-cols-3'>
               <div className='col-span-full order-1 md:col-start-1 md:col-end-2 '>
                 <p className='text-xl font-bold mb-4 md:mb-0'>#{'RT3080'}</p>
                 <p>Re-branding</p>
@@ -76,7 +85,72 @@ const InvoiceDetails = () => {
                   United Kingdom
                 </address>
               </div>
-            </CardContent>
+            </article>
+            <section className=''>
+              <Table className='rounded-xl border border-separate border-spacing-0 overflow-hidden'>
+                <TableHeader className=''>
+                  <TableRow className='border-none'>
+                    <TableHead className='px-8 hidden md:table-cell'>
+                      Item name
+                    </TableHead>
+                    <TableHead className='px-8 hidden md:table-cell'>
+                      Quantity
+                    </TableHead>
+                    <TableHead className='px-8 hidden md:table-cell'>
+                      Price
+                    </TableHead>
+                    <TableHead className='px-8 text-right hidden md:table-cell'>
+                      Total
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className=''>
+                  <TableRow className='h-8 border-none'>
+                    <TableCell className='font-medium px-8'>
+                      Brand Guidelines
+                    </TableCell>
+                    <TableCell className='table-cells md:hidden'></TableCell>
+                    <TableCell className='table-cells md:hidden'></TableCell>
+                    <TableCell className='px-8 hidden md:table-cell'>
+                      1
+                    </TableCell>
+                    <TableCell className='px-8 hidden md:table-cell'>
+                      £250.00
+                    </TableCell>
+                    <TableCell className='text-right px-8'> £250.00</TableCell>
+                  </TableRow>
+
+                  <TableRow className='h-8 border-none'>
+                    <TableCell className='font-medium px-8'>
+                      Brand Guidelines
+                    </TableCell>
+                    <TableCell className='table-cells md:hidden'></TableCell>
+                    <TableCell className='table-cells md:hidden'></TableCell>
+                    <TableCell className='px-8 hidden md:table-cell '>
+                      1
+                    </TableCell>
+                    <TableCell className=' px-8 hidden md:table-cell'>
+                      £250.00
+                    </TableCell>
+                    <TableCell className='text-right px-8 '> £250.00</TableCell>
+                  </TableRow>
+
+                  <TableRow className='bg-black '>
+                    <TableCell
+                      colSpan={2}
+                      className='font-medium col-span-2 px-8'>
+                      Amount due
+                    </TableCell>
+
+                    <TableCell
+                      colSpan={2}
+                      className='text-right font-bold text-3xl py-6 px-8'>
+                      £250.00
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </section>
           </CardContent>
         </Card>
       </section>
