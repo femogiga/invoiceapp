@@ -30,11 +30,11 @@ const InvoiceDetails = () => {
       <section className='mb-6'>
         <Card>
           <CardContent className='flex justify-between'>
-            <div className='flex gap-x-4 items-center'>
-              <p className='hidden md:block'>Status</p>
+            <div className='flex gap-x-4 items-center justify-between w-full md:justify-start'>
+              <p className=''>Status</p>
               <StatusBadge />
             </div>
-            <CardAction className='flex gap-x-4'>
+            <CardAction className='flex gap-x-4 hidden md:flex'>
               <Button variant='secondary'>Edit</Button>
               <Button variant='destructive'>Delete</Button>
             </CardAction>
@@ -42,7 +42,7 @@ const InvoiceDetails = () => {
         </Card>
       </section>
 
-      <section>
+      <section className='mb-8'>
         <Card>
           <CardContent className='grid gap-y-10'>
             <article className='grid  gap-y-6 grid-cols-2  md:grid-cols-3'>
@@ -156,6 +156,16 @@ const InvoiceDetails = () => {
                 </TableBody>
               </Table>
             </section>
+          </CardContent>
+        </Card>
+      </section>
+      <section className='mb-6 md:hidden'>
+        <Card>
+          <CardContent className='flex justify-between '>
+            <CardAction className='flex gap-x-4 justify-end w-full '>
+              <Button variant='secondary'>Edit</Button>
+              <Button variant='destructive'>Delete</Button>
+            </CardAction>
           </CardContent>
         </Card>
       </section>
