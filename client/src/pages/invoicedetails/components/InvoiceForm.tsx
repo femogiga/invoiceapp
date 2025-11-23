@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -15,10 +16,21 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import FormCalender from './FormCalender';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Trash } from 'lucide-react';
 
 const InvoiceForm = () => {
   return (
-    <Card>
+    <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
         <CardTitle>Edit #RT3080</CardTitle>
       </CardHeader>
@@ -101,7 +113,7 @@ const InvoiceForm = () => {
                 />
               </Field>
 
-              <FieldGroup className='grid grid-cols-3'>
+              <FieldGroup className='grid grid-cols-2 md:grid-cols-3'>
                 <Field>
                   <FieldLabel htmlFor='fromcity'>City</FieldLabel>
                   <Input
@@ -120,7 +132,7 @@ const InvoiceForm = () => {
                     required
                   />
                 </Field>
-                <Field>
+                <Field className='col-span-full md:col-span-1'>
                   <FieldLabel htmlFor='fromcountry'>Country</FieldLabel>
                   <Input
                     id='fromcountry'
@@ -132,9 +144,85 @@ const InvoiceForm = () => {
               </FieldGroup>
             </FieldGroup>
 
+            <FieldGroup className='grid grid-cols-2 items center'>
+              <Field>
+                <FormCalender />
+              </Field>
 
+              <Field>
+                <FieldLabel htmlFor='term'>Payment Terms</FieldLabel>
+                <Select>
+                  <SelectTrigger className=''>
+                    <SelectValue placeholder='Term' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Term</SelectLabel>
+                      <SelectItem value='apple'>Apple</SelectItem>
+                      <SelectItem value='banana'>Banana</SelectItem>
+                      <SelectItem value='blueberry'>Blueberry</SelectItem>
+                      <SelectItem value='grapes'>Grapes</SelectItem>
+                      <SelectItem value='pineapple'>Pineapple</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+            </FieldGroup>
             <FieldGroup>
-              
+              <Field>
+                <FieldLabel htmlFor='description'>Description</FieldLabel>
+                <Input
+                  id='description'
+                  type='text'
+                  placeholder='Description'
+                  required
+                />
+              </Field>
+
+              <p className='text-left'>ItemList</p>
+              <FieldGroup className="grid grid-cols-4 items-center md:grid-cols-5 ">
+                <Field className="col-span-full md:col-span-1">
+                  <FieldLabel htmlFor='itemname'>Item Name</FieldLabel>
+                  <Input
+                    id='quantity'
+                    type='text'
+                    placeholder='e.g Brand guidelines'
+                    required
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor='quantity'>Qty</FieldLabel>
+                  <Input id='quantity' type='text' placeholder='1' required />
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor='price'>Price</FieldLabel>
+                  <Input
+                    id='price'
+                    type='text'
+                    placeholder='e.g £100'
+                    required
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel htmlFor='total'>Total</FieldLabel>
+                  <Input
+                    id='total'
+                    type='text'
+                    placeholder='1800'
+                    disabled
+                    className='border-none'
+                  />
+                </Field>
+                <div>
+                  <p className="text-transparent">fdfdf</p>
+                  <Button variant='ghost' size='icon'>
+                    <Trash />
+                  </Button>
+                </div>
+              </FieldGroup>
             </FieldGroup>
           </FieldGroup>
         </form>
