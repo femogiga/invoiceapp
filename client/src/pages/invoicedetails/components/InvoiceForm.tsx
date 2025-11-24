@@ -27,12 +27,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Trash } from 'lucide-react';
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+} from "@/components/ui/button-group"
 
 const InvoiceForm = () => {
   return (
     <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
-        <CardTitle>Edit #RT3080</CardTitle>
+        <CardTitle className='text-left'>Edit #RT3080</CardTitle>
       </CardHeader>
       <CardContent>
         <form>
@@ -180,8 +185,8 @@ const InvoiceForm = () => {
               </Field>
 
               <p className='text-left'>ItemList</p>
-              <FieldGroup className="grid grid-cols-4 items-center md:grid-cols-5 ">
-                <Field className="col-span-full md:col-span-1">
+              <FieldGroup className='grid grid-cols-4 items-center md:grid-cols-5 '>
+                <Field className='col-span-full md:col-span-1'>
                   <FieldLabel htmlFor='itemname'>Item Name</FieldLabel>
                   <Input
                     id='quantity'
@@ -217,14 +222,24 @@ const InvoiceForm = () => {
                   />
                 </Field>
                 <div>
-                  <p className="text-transparent">fdfdf</p>
+                  <p className='text-transparent'>fdfdf</p>
                   <Button variant='ghost' size='icon'>
                     <Trash />
                   </Button>
                 </div>
               </FieldGroup>
+              <Button className='rounded-3xl' variant={'outline'}>
+                + Add New Item
+              </Button>
             </FieldGroup>
           </FieldGroup>
+
+          <div className='flex justify-end gap-x-1 mt-6'>
+            <Button className='rounded-3xl'>Cancel</Button>
+            <Button className='rounded-3xl' variant='secondary'>
+              Save Changes
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>
