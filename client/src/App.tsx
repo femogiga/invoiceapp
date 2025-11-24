@@ -10,10 +10,12 @@ import Index from './pages/home/Index';
 import BaseLayout from './layouts/BaseLayout';
 import { ThemeProvider } from './components/providers/ThemeProvider';
 import InvoiceDetails from './pages/invoicedetails/InvoiceDetails';
+import InvoiceForm from './pages/invoicedetails/components/InvoiceForm';
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route element={<BaseLayout />}>
+        <Route path='/' element={<InvoiceForm />} />
         <Route path='/invoices' element={<Index />} />
         <Route path='/invoices/:id' element={<InvoiceDetails />} />
       </Route>

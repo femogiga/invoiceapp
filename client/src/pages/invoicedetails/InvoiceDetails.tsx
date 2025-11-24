@@ -169,6 +169,7 @@ const InvoiceDetails = () => {
           </CardContent>
         </Card>
       </section>
+      
     </main>
   );
 };
