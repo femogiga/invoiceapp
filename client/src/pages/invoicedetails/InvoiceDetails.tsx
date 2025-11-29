@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -18,8 +18,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { useFetchInvoicesById } from '@/api/invoices';
+import { shortenString } from '@/utils/shortener';
+import { genFullname } from '@/utils/genFullname';
+import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
 
 const InvoiceDetails = () => {
+  const { id } = useParams()
+  const { invoiceByIdData } = useFetchInvoicesById(id );
+  console.log({ invoiceByIdData });
   return (
     <main className='col-span-12 md:col-span-10 text-start '>
       <section className='pb-6 mt-4'>
@@ -32,7 +39,7 @@ const InvoiceDetails = () => {
           <CardContent className='flex justify-between'>
             <div className='flex gap-x-4 items-center justify-between w-full md:justify-start'>
               <p className=''>Status</p>
-              <StatusBadge />
+              <StatusBadge status={invoiceByIdData?.status} />
             </div>
             <CardAction className='flex gap-x-4 hidden md:flex'>
               <Button variant='secondary'>Edit</Button>
@@ -47,42 +54,51 @@ const InvoiceDetails = () => {
           <CardContent className='grid gap-y-10'>
             <article className='grid  gap-y-6 grid-cols-2  md:grid-cols-3'>
               <div className='col-span-full order-1 md:col-start-1 md:col-end-2 '>
-                <p className='text-xl font-bold mb-4 md:mb-0'>#{'RT3080'}</p>
-                <p>Re-branding</p>
+                <p className='text-xl font-bold mb-4 md:mb-0'>
+                  #{shortenString(invoiceByIdData?.invoiceId)}
+                </p>
+                <p>{invoiceByIdData?.description}</p>
               </div>
               <address className='col-span-full order-2 md:col-start-3 md:col-end-4 md:justify-self-end'>
-                19 Union Terrace
+                {invoiceByIdData?.supplierStreet}
                 <br />
-                London
+                {invoiceByIdData?.supplierCity}
                 <br />
-                E1 3EZ
+                {invoiceByIdData?.supplierPostcode}
                 <br />
-                United Kingdom
+                {invoiceByIdData?.supplierCountry}
               </address>
 
               <div className='order-3'>
                 <p>Invoice date</p>
-                <p>18 Aug 2021</p>
+                <p>{invoiceByIdData?.invoiceDate}</p>
               </div>
               <div className='order-4 md:col-start-1 md:col-end-2'>
                 <p>Payment due</p>
-                <p>19 Aug 2021</p>
+                <p>{invoiceByIdData?.paymentDate}</p>
               </div>
               <div className='order-5 md:row-start-2 md:row-end-4 md:col-start-3 md:col-end-4'>
                 <p>Sent to</p>
-                <p>Jenseh@mail.com</p>
+                <Link to='mailto:invoiceByIdData?.email'>
+                  {invoiceByIdData?.email}
+                </Link>
               </div>
               <div className='order-6 col-start-2 col-end-3 row-start-3 row-end-5 md:row-start-2 md:row-end-4'>
                 <p className='mb-1'>Bill to</p>
-                <p>Jenseh Huang</p>
+                <p>
+                  {genFullname(
+                    invoiceByIdData?.firstname,
+                    invoiceByIdData?.lastname
+                  )}
+                </p>
                 <address>
-                  106 Kendell Street
+                  {invoiceByIdData?.customerStreet}
                   <br />
-                  Sharrington
+                  {invoiceByIdData?.customerCity}
                   <br />
-                  NR24 5WQ
+                  {invoiceByIdData?.customerPostcode}
                   <br />
-                  United Kingdom
+                  {invoiceByIdData?.customerCountry}
                 </address>
               </div>
             </article>
@@ -105,25 +121,31 @@ const InvoiceDetails = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody className=''>
-                  <TableRow className='h-8 border-none'>
-                    <TableCell className='font-medium px-4 md:px-8 font-wrap'>
-                      Brand Guidelines
-                    </TableCell>
-                    <TableCell className='table-cells md:hidden '></TableCell>
-                    <TableCell className='table-cells md:hidden'></TableCell>
-                    <TableCell className='px-4 hidden md:table-cell md:px-8'>
-                      1
-                    </TableCell>
-                    <TableCell className='px-4 hidden md:table-cell md:px-8'>
-                      £250.00
-                    </TableCell>
-                    <TableCell className='text-right px-4 md:px-8'>
-                      {' '}
-                      £250.00
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow className='h-8 border-none'>
+                  {invoiceByIdData &&
+                    invoiceByIdData?.products.map((product) => (
+                      <TableRow key={product?.id} className='h-8 border-none'>
+                        <TableCell className='font-medium px-4 md:px-8 font-wrap'>
+                          {product.name}
+                        </TableCell>
+                        <TableCell className='table-cells md:hidden '></TableCell>
+                        <TableCell className='table-cells md:hidden'></TableCell>
+                        <TableCell className='px-4 hidden md:table-cell md:px-8'>
+                          {product?.quantity}
+                        </TableCell>
+                        <TableCell className='px-4 hidden md:table-cell md:px-8'>
+                          £{product?.price}
+                        </TableCell>
+                        <TableCell className='text-right px-4 md:px-8'>
+                          {' '}
+                          £
+                          {calculateTotalProductPrice(
+                            product?.price,
+                            product?.quantity
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  {/* <TableRow className='h-8 border-none'>
                     <TableCell className='font-medium px-4 md:px-8'>
                       Brand Guidelines
                     </TableCell>
@@ -138,7 +160,7 @@ const InvoiceDetails = () => {
                     <TableCell className='text-right px-4 md:px-8 '>
                       £250.00
                     </TableCell>
-                  </TableRow>
+                  </TableRow> */}
 
                   <TableRow className='bg-black'>
                     <TableCell
@@ -150,7 +172,7 @@ const InvoiceDetails = () => {
                     <TableCell
                       colSpan={2}
                       className='text-right font-bold text-3xl py-6 px-4 md:px-8'>
-                      £250.00
+                      £{invoiceByIdData?.total}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -169,7 +191,6 @@ const InvoiceDetails = () => {
           </CardContent>
         </Card>
       </section>
-      
     </main>
   );
 };

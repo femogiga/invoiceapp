@@ -57,10 +57,15 @@ const HeaderSidebar = () => {
             {theme === 'dark' ? <Sun /> : <Moon />}
           </Button>
         </div>
-        <Avatar>
-          <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <Button
+          size='icon'
+          className='border-none rounded-3xl cursor-pointer'
+          variant={'ghost'}>
+          <Avatar>
+            <AvatarImage src='https://github.com/shadcn.png' alt='@shadcn' />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </Button>
       </div>
     </Menubar>
   );

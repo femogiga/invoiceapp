@@ -1,0 +1,41 @@
+{
+  "name": "sonnette",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.ts",
+    "dev": "nodemon index.ts",
+    "seed": "ts-node connections/database/seeds/customer.ts && ts-node connections/database/seeds/product.ts  && ts-node connections/database/seeds/invoice.ts && ts-node connections/database/seeds/user.ts "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^7.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/morgan": "^1.9.10",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
+    "express": "^5.1.0",
+    "knex": "^3.1.0",
+    "kysely": "^0.28.8",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.11",
+    "objection": "^3.1.5",
+    "pg": "^8.16.3",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.15.6",
+    "drizzle-kit": "^0.31.7",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
