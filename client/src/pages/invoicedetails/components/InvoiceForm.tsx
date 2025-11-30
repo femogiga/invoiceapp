@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -31,9 +31,29 @@ import {
   ButtonGroup,
   ButtonGroupSeparator,
   ButtonGroupText,
-} from "@/components/ui/button-group"
+} from '@/components/ui/button-group';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import RowInput from './RowInput';
+const InvoiceForm = ({}) => {
+  const [inputArray, setInputArray] = useState<number[]>([]);
 
-const InvoiceForm = () => {
+  const handleAddInput = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const newArr = [...inputArray, 1];
+    setInputArray(newArr);
+  };
+  // useEffect(() => {
+
+  // },[inputArray])
+
   return (
     <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
@@ -184,8 +204,8 @@ const InvoiceForm = () => {
                 />
               </Field>
 
-              <p className='text-left'>ItemList</p>
-              <FieldGroup className='grid grid-cols-4 items-center md:grid-cols-5 '>
+              <p className='text-left mb-6'>ItemList</p>
+              {/* <FieldGroup className='grid grid-cols-4 items-center md:grid-cols-5 '>
                 <Field className='col-span-full md:col-span-1'>
                   <FieldLabel htmlFor='itemname'>Item Name</FieldLabel>
                   <Input
@@ -223,17 +243,139 @@ const InvoiceForm = () => {
                 </Field>
                 <div>
                   <p className='text-transparent'>fdfdf</p>
-                  <Button variant='ghost' size='icon'>
-                    <Trash />
-                  </Button>
+                  <div>
+                    <Button variant='ghost' size='icon'>
+                      <Trash />
+                    </Button>
+                  </div>
+                  {inputArray.map((input) => (
+                    <div>
+                      <Button variant='ghost' size='icon'>
+                        <Trash />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-              </FieldGroup>
-              <Button className='rounded-3xl' variant={'outline'}>
+              </FieldGroup> */}
+              {/* <Button
+                className='rounded-3xl'
+                variant={'outline'}
+                onClick={handleAddInput}>
                 + Add New Item
-              </Button>
+              </Button> */}
             </FieldGroup>
           </FieldGroup>
+          {/* <Table>
+            <TableHeader className=''>
+              <TableRow className='border-none'>
+                <TableHead className='px-4  hidden md:px-8 md:table-cell'>
+                  Item name
+                </TableHead>
+                <TableHead className='px-4 hidden md:table-cell md:px-8'>
+                  Quantity
+                </TableHead>
+                <TableHead className='px-4 hidden md:table-cell md:px-8'>
+                  Price
+                </TableHead>
+                <TableHead className='px-4 text-right hidden md:table-cell md:px-8'>
+                  Total
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className=''>
+              <TableRow>
+                <TableCell>
+                  <Input
+                    id='quantity'
+                    type='text'
+                    placeholder='e.g Brand guidelines'
+                    required
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input id='quantity' type='text' placeholder='1' required />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id='price'
+                    type='text'
+                    placeholder='e.g £100'
+                    required
+                  />
+                </TableCell>
+                <TableCell>
+                  {' '}
+                  <Input
+                    id='total'
+                    type='text'
+                    placeholder='1800'
+                    disabled
+                    className='border-none'
+                  />
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <Button variant='ghost' size='icon'>
+                      <Trash />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+              {inputArray.map((input) => (
+                <RowInput />
+              ))}
+            </TableBody>
+          </Table> */}
+          <article>
+            <div className='grid grid-cols-8 items-center text-left gap-x-2 gap-y-6 mb-6'>
+              <div className='col-span-full md:col-span-3'>
+                <p className='mb-2'>Item Name</p>
+                <Input
+                  id='quantity'
+                  type='text'
+                  placeholder='e.g Brand guidelines'
+                  required
+                />
+              </div>
 
+              <div className='col-span-2 md:col-span-1'>
+                <p className='mb-2'>Qty</p>
+                <Input id='quantity' type='text' placeholder='1' required />
+              </div>
+              <div className='col-span-3 md:col-span-1'>
+                <p className='mb-2'>Price</p>
+                <Input id='price' type='text' placeholder='e.g £100' required />
+              </div>
+              <div className='col-span-2'>
+                <p className='mb-2'>Total</p>
+                <Input
+                  id='total'
+                  type='text'
+                  placeholder='1800'
+                  disabled
+                  className='border-none'
+                />
+              </div>
+              <div className='text-right'>
+                <p className='opacity-0 mb-2'>Name</p>
+                <Button variant='ghost' size='icon'>
+                  <Trash />
+                </Button>
+              </div>
+            </div>
+            {inputArray.map((item, index) => (
+              <RowInput index={index} />
+            ))}
+          </article>
+
+          <div className='w-full'>
+            <Button
+              className='rounded-3xl  block w-full'
+              variant={'outline'}
+              onClick={handleAddInput}>
+              + Add New Item
+            </Button>
+          </div>
           <div className='flex justify-end gap-x-1 mt-6'>
             <Button className='rounded-3xl'>Cancel</Button>
             <Button className='rounded-3xl' variant='secondary'>

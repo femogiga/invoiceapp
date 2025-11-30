@@ -145,22 +145,7 @@ const InvoiceDetails = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                  {/* <TableRow className='h-8 border-none'>
-                    <TableCell className='font-medium px-4 md:px-8'>
-                      Brand Guidelines
-                    </TableCell>
-                    <TableCell className='table-cells md:hidden'></TableCell>
-                    <TableCell className='table-cells md:hidden'></TableCell>
-                    <TableCell className='px-4 hidden md:table-cell md:px-8'>
-                      1
-                    </TableCell>
-                    <TableCell className=' px-4 hidden md:table-cell md:px-8'>
-                      £250.00
-                    </TableCell>
-                    <TableCell className='text-right px-4 md:px-8 '>
-                      £250.00
-                    </TableCell>
-                  </TableRow> */}
+                  
 
                   <TableRow className='bg-black'>
                     <TableCell
