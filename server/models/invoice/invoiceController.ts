@@ -2,6 +2,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { db } from '../../connections/database/client.ts'
 import { customers, invoices, invoicesToProducts, products, invoicesToProductsRelations, invoicesToCustomers, invoicesToCustomersRelations, suppliersToCustomers, suppliers, addresses } from '../../connections/database/index.ts';
 import { eq, sql } from 'drizzle-orm';
+import { paymentDueDateCalculator } from '../../src/util/paymentDueDateCalculator.ts';
 
 
 
@@ -165,4 +166,52 @@ export const getById = async (req, res) => {
         res.status(500).json(error);
     }
 }
-export default { getAll, getById }
+
+
+
+
+export const createNewInvoice = async (req, res, next) => {
+    try {
+
+        const { invoiceId, term, description, invoiceDate, firstname, lastname, gender, email, customerStreet, customerCity, customerPostcode, customerId, customerCountry, supplierId, supplierStreet, supplierCity, supplierPostcode, supplierCountry } = req.body
+        console.log({ term, description, invoiceDate })
+        // calculate paymentDueDate
+
+        const paymentDate = paymentDueDateCalculator(invoiceDate, term);
+        const invoiceResult = await db.insert(invoices).values({ term, description, invoiceDate, paymentDate }).returning({ id: invoices.id });
+
+        const returnInvoiceId = invoiceResult[0]?.id
+        console.log(returnInvoiceId)
+        // inserting customer schema
+        const customerResult = await db.insert(customers).values({ firstname, lastname, gender, email }).returning({ id: customers.id });
+        const returnedCustomerId = customerResult[0]?.id
+
+
+        //inserting invoice_to_customer
+        const invoiceToCustomerJoinTable = await db.insert(invoicesToCustomers).values({ invoiceId:invoiceId || returnInvoiceId, customerId: customerId || returnedCustomerId })
+
+        //inserting address
+        const addressResult = await db.insert(addresses).values({ street: customerStreet, city: customerCity, country: customerCountry, postcode: customerPostcode, customerId: customerId || returnedCustomerId })
+
+        //inserting supplier address
+        const supplierResult = await db.insert(suppliers).values({ street: supplierStreet, city: supplierCity, postcode: supplierPostcode, country: supplierCountry }).returning({ id: customers.id });
+
+        const supplierAddressId = supplierResult[0]?.id
+
+        const supplierToCustomerJoinTable = await db.insert(suppliersToCustomers).values({ customerId: customerId || returnedCustomerId, supplierId:supplierId || supplierAddressId })
+        res.status(201).json({ message: 'invoice successfully created' })
+
+
+    }
+    catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'INTERNAL SERVER ERROR' })
+    };
+}
+
+
+
+
+
+
+export default { getAll, getById, createNewInvoice }

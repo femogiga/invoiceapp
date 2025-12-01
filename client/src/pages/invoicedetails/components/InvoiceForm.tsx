@@ -42,7 +42,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import RowInput from './RowInput';
-const InvoiceForm = ({}) => {
+import { useNavigate } from 'react-router-dom';
+const InvoiceForm = ({heading}) => {
   const [inputArray, setInputArray] = useState<number[]>([]);
 
   const handleAddInput = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,10 +55,12 @@ const InvoiceForm = ({}) => {
 
   // },[inputArray])
 
+
+
   return (
     <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
-        <CardTitle className='text-left'>Edit #RT3080</CardTitle>
+        <CardTitle className='text-left'>{heading ||'Edit #RT3080'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form>

@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 const Index = () => {
 
   const { invoiceData } = useFetchAllInvoices();
-  console.log(invoiceData)
+  
+  // console.log(invoiceData)
   return (
     <main className=' border col-span-12 md:col-span-10'>
       <section className='py-6'>

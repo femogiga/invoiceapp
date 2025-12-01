@@ -2,8 +2,14 @@ import React from 'react';
 import AppSelect from './AppSelect';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const AppFilter = () => {
+  const navigate = useNavigate();
+
+  const handleCreateButtonClick = () => {
+    navigate('/invoices/create');
+  };
   return (
     <article>
       <div className='flex justify-between'>
@@ -19,7 +25,10 @@ const AppFilter = () => {
             <AppSelect />
           </div>
           <div>
-            <Button size='lg' className='rounded-4xl'>
+            <Button
+              size='lg'
+              className='rounded-4xl'
+              onClick={handleCreateButtonClick}>
               <PlusCircle />
               <p>New</p>
             </Button>

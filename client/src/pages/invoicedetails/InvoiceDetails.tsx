@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -26,7 +26,12 @@ import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
 const InvoiceDetails = () => {
   const { id } = useParams()
   const { invoiceByIdData } = useFetchInvoicesById(id );
-  console.log({ invoiceByIdData });
+  // console.log({ invoiceByIdData });
+
+  const navigate = useNavigate()
+  const handleEditButtonClick = () => {
+    navigate(`/invoices/${id}/edit`)
+  }
   return (
     <main className='col-span-12 md:col-span-10 text-start '>
       <section className='pb-6 mt-4'>
@@ -42,7 +47,7 @@ const InvoiceDetails = () => {
               <StatusBadge status={invoiceByIdData?.status} />
             </div>
             <CardAction className='flex gap-x-4 hidden md:flex'>
-              <Button variant='secondary'>Edit</Button>
+              <Button variant='secondary' onClick={handleEditButtonClick}>Edit</Button>
               <Button variant='destructive'>Delete</Button>
             </CardAction>
           </CardContent>
@@ -145,7 +150,7 @@ const InvoiceDetails = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-                  
+
 
                   <TableRow className='bg-black'>
                     <TableCell
