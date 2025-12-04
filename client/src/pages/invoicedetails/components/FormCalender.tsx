@@ -32,13 +32,14 @@ function isValidDate(date: Date | undefined) {
   return !isNaN(date.getTime());
 }
 
-const  FormCalender = () =>{
+const FormCalender = ({ onSendDate }) => {
   const [open, setOpen] = React.useState(false);
   const [date, setDate] = React.useState<Date | undefined>(
     new Date('2025-06-01')
   );
   const [month, setMonth] = React.useState<Date | undefined>(date);
   const [value, setValue] = React.useState(formatDate(date));
+  console.log(value);
 
   return (
     <div className='flex flex-col gap-3'>
@@ -91,6 +92,7 @@ const  FormCalender = () =>{
                 setDate(date);
                 setValue(formatDate(date));
                 setOpen(false);
+                 onSendDate(value);
               }}
             />
           </PopoverContent>
@@ -98,7 +100,7 @@ const  FormCalender = () =>{
       </div>
     </div>
   );
-}
+};
 
 
 export default FormCalender;

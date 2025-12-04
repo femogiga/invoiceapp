@@ -43,24 +43,25 @@ import {
 } from '@/components/ui/table';
 import RowInput from './RowInput';
 import { useNavigate } from 'react-router-dom';
-const InvoiceForm = ({heading}) => {
-  const [inputArray, setInputArray] = useState<number[]>([]);
-
-  const handleAddInput = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const newArr = [...inputArray, 1];
-    setInputArray(newArr);
-  };
-  // useEffect(() => {
-
-  // },[inputArray])
-
-
+const InvoiceForm = ({
+  heading,
+  onChange,
+  onAddInput,
+  inputArray,
+  onChangeInputArray,
+  value,
+  setInputArray,
+  onHandleSelectChange,
+  invoiceData,
+  onSubmit,
+  onSendDate,
+}) => {
+ 
 
   return (
     <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
-        <CardTitle className='text-left'>{heading ||'Edit #RT3080'}</CardTitle>
+        <CardTitle className='text-left'>{heading || 'Edit #RT3080'}</CardTitle>
       </CardHeader>
       <CardContent>
         <form>
@@ -68,42 +69,50 @@ const InvoiceForm = ({heading}) => {
             <FieldGroup>
               <Field>
                 <p className='text-left'>Bill from</p>
-                <FieldLabel htmlFor='fromstreetaddress'>
-                  Street Address
-                </FieldLabel>
+                <FieldLabel htmlFor='supplierStreet'>Street Address</FieldLabel>
                 <Input
-                  id='fromstreetaddress'
+                  id='supplierStreet'
                   type='text'
                   placeholder='10 London street'
                   required
+                  onChange={onChange}
+                  name='supplierStreet'
+                  value={value}
                 />
               </Field>
               <FieldGroup className='grid grid-cols-3'>
                 <Field>
                   <FieldLabel htmlFor='fromcity'>city</FieldLabel>
                   <Input
-                    id='fromcity'
+                    id='supplierCity'
                     type='text'
                     placeholder='London'
                     required
+                    onChange={onChange}
+                    name='supplierCity'
+                    value={value}
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor='frompostcode'>Post Code</FieldLabel>
+                  <FieldLabel htmlFor='supplierPostcode'>Post Code</FieldLabel>
                   <Input
-                    id='frompostcode'
+                    id='supplierPostcode'
                     type='text'
                     placeholder='LU3 2SJ'
                     required
+                    onChange={onChange}
+                    name='supplierPostcode'
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor='fromcountry'>Country</FieldLabel>
+                  <FieldLabel htmlFor='supplierCountry'>Country</FieldLabel>
                   <Input
-                    id='fromcountry'
+                    id='supplierCountry'
                     type='text'
                     placeholder='United kingdom'
                     required
+                    onChange={onChange}
+                    name='supplierCountry'
                   />
                 </Field>
               </FieldGroup>
@@ -112,12 +121,14 @@ const InvoiceForm = ({heading}) => {
             <FieldGroup>
               <p className='text-left'>Bill To</p>
               <Field>
-                <FieldLabel htmlFor='clientname'>Client's name</FieldLabel>
+                <FieldLabel htmlFor='fullname'>Client's name</FieldLabel>
                 <Input
-                  id='clientname'
+                  id='fullname'
                   type='text'
                   placeholder='Jane Doe'
                   required
+                  onChange={onChange}
+                  name='fullname'
                 />
               </Field>
               <Field>
@@ -127,46 +138,54 @@ const InvoiceForm = ({heading}) => {
                   type='email'
                   placeholder='m@example.com'
                   required
+                  onChange={onChange}
+                  name='email'
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor='fromstreetaddress'>
-                  Street Address
-                </FieldLabel>
+                <FieldLabel htmlFor='customerStreet'>Street Address</FieldLabel>
                 <Input
-                  id='fromstreetaddress'
+                  id='customerStreet'
                   type='text'
                   placeholder='10 London street'
                   required
+                  onChange={onChange}
+                  name='customerStreet'
                 />
               </Field>
 
               <FieldGroup className='grid grid-cols-2 md:grid-cols-3'>
                 <Field>
-                  <FieldLabel htmlFor='fromcity'>City</FieldLabel>
+                  <FieldLabel htmlFor='customerCity'>City</FieldLabel>
                   <Input
-                    id='fromcity'
+                    id='customerCity'
                     type='text'
                     placeholder='London'
                     required
+                    onChange={onChange}
+                    name='customerCity'
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor='frompostcode'>Post Code</FieldLabel>
+                  <FieldLabel htmlFor='customerPostcode'>Post Code</FieldLabel>
                   <Input
-                    id='frompostcode'
+                    id='customerPostcode'
                     type='text'
                     placeholder='LU3 2SJ'
                     required
+                    onChange={onChange}
+                    name='customerPostcode'
                   />
                 </Field>
                 <Field className='col-span-full md:col-span-1'>
-                  <FieldLabel htmlFor='fromcountry'>Country</FieldLabel>
+                  <FieldLabel htmlFor='customerCountry'>Country</FieldLabel>
                   <Input
-                    id='fromcountry'
+                    id='customerCountry'
                     type='text'
                     placeholder='United kingdom'
                     required
+                    onChange={onChange}
+                    name='customerCountry'
                   />
                 </Field>
               </FieldGroup>
@@ -174,23 +193,25 @@ const InvoiceForm = ({heading}) => {
 
             <FieldGroup className='grid grid-cols-2 items center'>
               <Field>
-                <FormCalender />
+                <FormCalender onSendDate={onSendDate} />
               </Field>
 
               <Field>
                 <FieldLabel htmlFor='term'>Payment Terms</FieldLabel>
-                <Select>
+                <Select
+                  onValueChange={onHandleSelectChange}
+                  name='term'
+                  value={invoiceData.term}>
                   <SelectTrigger className=''>
                     <SelectValue placeholder='Term' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Term</SelectLabel>
-                      <SelectItem value='apple'>Apple</SelectItem>
-                      <SelectItem value='banana'>Banana</SelectItem>
-                      <SelectItem value='blueberry'>Blueberry</SelectItem>
-                      <SelectItem value='grapes'>Grapes</SelectItem>
-                      <SelectItem value='pineapple'>Pineapple</SelectItem>
+                      <SelectItem value='7'>Next 7 Days</SelectItem>
+                      <SelectItem value='14'>Next 14 Days</SelectItem>
+                      <SelectItem value='21'>Next 21 Days</SelectItem>
+                      <SelectItem value='30'>Next 30 Days</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -204,6 +225,8 @@ const InvoiceForm = ({heading}) => {
                   type='text'
                   placeholder='Description'
                   required
+                  onChange={onChange}
+                  name='description'
                 />
               </Field>
 
@@ -334,20 +357,36 @@ const InvoiceForm = ({heading}) => {
               <div className='col-span-full md:col-span-3'>
                 <p className='mb-2'>Item Name</p>
                 <Input
-                  id='quantity'
+                  id='name'
                   type='text'
                   placeholder='e.g Brand guidelines'
                   required
+                  onChange={onChange}
+                  name='name'
                 />
               </div>
 
               <div className='col-span-2 md:col-span-1'>
                 <p className='mb-2'>Qty</p>
-                <Input id='quantity' type='text' placeholder='1' required />
+                <Input
+                  id='quantity'
+                  type='text'
+                  placeholder='1'
+                  required
+                  name='quantity'
+                  onChange={onChange}
+                />
               </div>
               <div className='col-span-3 md:col-span-1'>
                 <p className='mb-2'>Price</p>
-                <Input id='price' type='text' placeholder='e.g £100' required />
+                <Input
+                  id='price'
+                  type='text'
+                  placeholder='e.g £100'
+                  required
+                  name='price'
+                  onChange={onChange}
+                />
               </div>
               <div className='col-span-2'>
                 <p className='mb-2'>Total</p>
@@ -367,7 +406,13 @@ const InvoiceForm = ({heading}) => {
               </div>
             </div>
             {inputArray.map((item, index) => (
-              <RowInput index={index} />
+              <RowInput
+                index={index}
+                key={`rowIndex${index}`}
+                onChange={(e) => onChangeInputArray(index, e.target.value)}
+                inputArray={inputArray}
+                setInputArray={setInputArray}
+              />
             ))}
           </article>
 
@@ -375,13 +420,16 @@ const InvoiceForm = ({heading}) => {
             <Button
               className='rounded-3xl  block w-full'
               variant={'outline'}
-              onClick={handleAddInput}>
+              onClick={onAddInput}>
               + Add New Item
             </Button>
           </div>
           <div className='flex justify-end gap-x-1 mt-6'>
             <Button className='rounded-3xl'>Cancel</Button>
-            <Button className='rounded-3xl' variant='secondary'>
+            <Button
+              className='rounded-3xl'
+              variant='secondary'
+              onClick={onSubmit}>
               Save Changes
             </Button>
           </div>

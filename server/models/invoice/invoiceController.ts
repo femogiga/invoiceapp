@@ -3,6 +3,7 @@ import { db } from '../../connections/database/client.ts'
 import { customers, invoices, invoicesToProducts, products, invoicesToProductsRelations, invoicesToCustomers, invoicesToCustomersRelations, suppliersToCustomers, suppliers, addresses } from '../../connections/database/index.ts';
 import { eq, sql } from 'drizzle-orm';
 import { paymentDueDateCalculator } from '../../src/util/paymentDueDateCalculator.ts';
+import { splitName } from '../../src/util/splitNames.ts';
 // import { products } from './../../connections/database/schema/product';
 
 
@@ -14,7 +15,7 @@ export const getAll1 = async (req, res) => {
         const result = await db.select().from(invoices).leftJoin(customers, eq(invoices.id, customers.id)).leftJoin(products, eq(invoices.id, products.id))
 
 
-        console.log(result)
+        // console.log(result)
         res.status(200).json(result)
     } catch (error) {
         console.error(error)
@@ -55,7 +56,7 @@ export const getAll = async (req, res) => {
                     ) FILTER (WHERE products.id IS NOT NULL),
                     '[]'::JSON
                 )`.as('products'),
-                total: sql`SUM(price)`
+                total: sql`SUM(price *quantity)`
             })
             .from(invoices)
             .leftJoin(invoicesToProducts, eq(invoices.id, invoicesToProducts.invoiceId))
@@ -175,12 +176,13 @@ export const createNewInvoice = async (req, res, next) => {
     try {
 
 
-
-        const { invoiceId, term, description, invoiceDate, firstname, lastname, gender, email, customerStreet, customerCity, customerPostcode, customerId, customerCountry, supplierId, supplierStreet, supplierCity, supplierPostcode, supplierCountry, productName, productPrice, productId, quantity,productGroup } = req.body
+        console.log(req.body)
+        const { description, term, invoiceDate, fullname, email, customerStreet, customerCity, customerPostcode, customerCountry, supplierId, supplierStreet, supplierCity, supplierPostcode, supplierCountry, productGroup } = req.body
         console.log({ term, description, invoiceDate })
 
-
-
+        const splittedName = splitName(fullname)
+        const firstname = splittedName.firstname
+        const lastname = splittedName.lastname
         // calculate paymentDueDate
 
         const paymentDate = paymentDueDateCalculator(invoiceDate, term);
@@ -189,22 +191,22 @@ export const createNewInvoice = async (req, res, next) => {
         const returnInvoiceId = invoiceResult[0]?.id
         console.log(returnInvoiceId)
         // inserting customer schema
-        const customerResult = await db.insert(customers).values({ firstname, lastname, gender, email }).returning({ id: customers.id });
+        const customerResult = await db.insert(customers).values({ firstname, lastname,  email }).returning({ id: customers.id });
         const returnedCustomerId = customerResult[0]?.id
 
 
         //inserting invoice_to_customer
-        const invoiceToCustomerJoinTable = await db.insert(invoicesToCustomers).values({ invoiceId: invoiceId || returnInvoiceId, customerId: customerId || returnedCustomerId })
+        const invoiceToCustomerJoinTable = await db.insert(invoicesToCustomers).values({ invoiceId: returnInvoiceId, customerId: returnedCustomerId })
 
         //inserting address
-        const addressResult = await db.insert(addresses).values({ street: customerStreet, city: customerCity, country: customerCountry, postcode: customerPostcode, customerId: customerId || returnedCustomerId })
+        const addressResult = await db.insert(addresses).values({ street: customerStreet, city: customerCity, country: customerCountry, postcode: customerPostcode, customerId: returnedCustomerId })
 
         //inserting supplier address
         const supplierResult = await db.insert(suppliers).values({ street: supplierStreet, city: supplierCity, postcode: supplierPostcode, country: supplierCountry }).returning({ id: customers.id });
 
         const supplierAddressId = supplierResult[0]?.id
 
-        const supplierToCustomerJoinTable = await db.insert(suppliersToCustomers).values({ customerId: customerId || returnedCustomerId, supplierId: supplierId || supplierAddressId })
+        const supplierToCustomerJoinTable = await db.insert(suppliersToCustomers).values({ customerId: returnedCustomerId, supplierId: supplierId || supplierAddressId })
 
 
 
@@ -223,15 +225,15 @@ export const createNewInvoice = async (req, res, next) => {
             throw new Error('Failed to create all products');
         }
 
-        const mappedRelations = productGroup.map((product,index) => ({
-            invoiceId:invoiceId || returnInvoiceId,
-            productId: productResult[index]?.id ||productId,
-            quantity:product.quantity || 1
-       }))
+        const mappedRelations = productGroup.map((product, index) => ({
+            invoiceId: returnInvoiceId,
+            productId: productResult[index]?.id,
+            quantity: product.quantity || 1
+        }))
 
         //inserting  invoice_on_product jointable
         // const invoiceOnProductsJoinTable = await db.insert(invoicesToProducts).values({invoiceId:invoiceId || returnInvoiceId,productId:productId || returnProductId,quantity:quantity})
-       const final =  await db.insert(invoicesToProducts).values(mappedRelations);
+        const final = await db.insert(invoicesToProducts).values(mappedRelations);
 
         res.status(201).json({ message: 'invoice successfully created' })
 
