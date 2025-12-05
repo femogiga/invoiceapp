@@ -43,20 +43,20 @@ import {
 } from '@/components/ui/table';
 import RowInput from './RowInput';
 import { useNavigate } from 'react-router-dom';
+import { genFullname } from './../../../utils/genFullname';
 const InvoiceForm = ({
   heading,
   onChange,
   onAddInput,
   inputArray,
   onChangeInputArray,
-  value,
   setInputArray,
   onHandleSelectChange,
   invoiceData,
   onSubmit,
   onSendDate,
 }) => {
- 
+
 
   return (
     <Card className='col-span-12 md:col-span-10'>
@@ -77,7 +77,7 @@ const InvoiceForm = ({
                   required
                   onChange={onChange}
                   name='supplierStreet'
-                  value={value}
+                  value={invoiceData?.supplierStreet}
                 />
               </Field>
               <FieldGroup className='grid grid-cols-3'>
@@ -90,7 +90,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='supplierCity'
-                    value={value}
+                    value={invoiceData?.supplierCity || ''}
                   />
                 </Field>
                 <Field>
@@ -102,6 +102,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='supplierPostcode'
+                    value={invoiceData?.supplierPostcode}
                   />
                 </Field>
                 <Field>
@@ -113,6 +114,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='supplierCountry'
+                    value={invoiceData?.supplierCountry}
                   />
                 </Field>
               </FieldGroup>
@@ -129,6 +131,10 @@ const InvoiceForm = ({
                   required
                   onChange={onChange}
                   name='fullname'
+                  value={genFullname(
+                    invoiceData?.firstname,
+                    invoiceData?.lastname
+                  )}
                 />
               </Field>
               <Field>
@@ -140,6 +146,7 @@ const InvoiceForm = ({
                   required
                   onChange={onChange}
                   name='email'
+                  value={invoiceData?.email}
                 />
               </Field>
               <Field>
@@ -151,6 +158,7 @@ const InvoiceForm = ({
                   required
                   onChange={onChange}
                   name='customerStreet'
+                  value={invoiceData?.customerStreet}
                 />
               </Field>
 
@@ -164,6 +172,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='customerCity'
+                    value={invoiceData?.customerCity}
                   />
                 </Field>
                 <Field>
@@ -175,6 +184,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='customerPostcode'
+                    value={invoiceData?.customerPostcode}
                   />
                 </Field>
                 <Field className='col-span-full md:col-span-1'>
@@ -186,6 +196,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='customerCountry'
+                    value={invoiceData?.customerCountry}
                   />
                 </Field>
               </FieldGroup>
@@ -201,7 +212,8 @@ const InvoiceForm = ({
                 <Select
                   onValueChange={onHandleSelectChange}
                   name='term'
-                  value={invoiceData.term}>
+                  value={invoiceData?.term}
+                  >
                   <SelectTrigger className=''>
                     <SelectValue placeholder='Term' />
                   </SelectTrigger>
@@ -227,131 +239,14 @@ const InvoiceForm = ({
                   required
                   onChange={onChange}
                   name='description'
+                  value={invoiceData?.description}
                 />
               </Field>
 
               <p className='text-left mb-6'>ItemList</p>
-              {/* <FieldGroup className='grid grid-cols-4 items-center md:grid-cols-5 '>
-                <Field className='col-span-full md:col-span-1'>
-                  <FieldLabel htmlFor='itemname'>Item Name</FieldLabel>
-                  <Input
-                    id='quantity'
-                    type='text'
-                    placeholder='e.g Brand guidelines'
-                    required
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel htmlFor='quantity'>Qty</FieldLabel>
-                  <Input id='quantity' type='text' placeholder='1' required />
-                </Field>
-
-                <Field>
-                  <FieldLabel htmlFor='price'>Price</FieldLabel>
-                  <Input
-                    id='price'
-                    type='text'
-                    placeholder='e.g £100'
-                    required
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel htmlFor='total'>Total</FieldLabel>
-                  <Input
-                    id='total'
-                    type='text'
-                    placeholder='1800'
-                    disabled
-                    className='border-none'
-                  />
-                </Field>
-                <div>
-                  <p className='text-transparent'>fdfdf</p>
-                  <div>
-                    <Button variant='ghost' size='icon'>
-                      <Trash />
-                    </Button>
-                  </div>
-                  {inputArray.map((input) => (
-                    <div>
-                      <Button variant='ghost' size='icon'>
-                        <Trash />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </FieldGroup> */}
-              {/* <Button
-                className='rounded-3xl'
-                variant={'outline'}
-                onClick={handleAddInput}>
-                + Add New Item
-              </Button> */}
             </FieldGroup>
           </FieldGroup>
-          {/* <Table>
-            <TableHeader className=''>
-              <TableRow className='border-none'>
-                <TableHead className='px-4  hidden md:px-8 md:table-cell'>
-                  Item name
-                </TableHead>
-                <TableHead className='px-4 hidden md:table-cell md:px-8'>
-                  Quantity
-                </TableHead>
-                <TableHead className='px-4 hidden md:table-cell md:px-8'>
-                  Price
-                </TableHead>
-                <TableHead className='px-4 text-right hidden md:table-cell md:px-8'>
-                  Total
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className=''>
-              <TableRow>
-                <TableCell>
-                  <Input
-                    id='quantity'
-                    type='text'
-                    placeholder='e.g Brand guidelines'
-                    required
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input id='quantity' type='text' placeholder='1' required />
-                </TableCell>
-                <TableCell>
-                  <Input
-                    id='price'
-                    type='text'
-                    placeholder='e.g £100'
-                    required
-                  />
-                </TableCell>
-                <TableCell>
-                  {' '}
-                  <Input
-                    id='total'
-                    type='text'
-                    placeholder='1800'
-                    disabled
-                    className='border-none'
-                  />
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <Button variant='ghost' size='icon'>
-                      <Trash />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              {inputArray.map((input) => (
-                <RowInput />
-              ))}
-            </TableBody>
-          </Table> */}
+
           <article>
             <div className='grid grid-cols-8 items-center text-left gap-x-2 gap-y-6 mb-6'>
               <div className='col-span-full md:col-span-3'>
@@ -405,13 +300,14 @@ const InvoiceForm = ({
                 </Button>
               </div>
             </div>
-            {inputArray.map((item, index) => (
+            {inputArray && inputArray?.map((item, index) => (
               <RowInput
                 index={index}
                 key={`rowIndex${index}`}
                 onChange={(e) => onChangeInputArray(index, e.target.value)}
                 inputArray={inputArray}
                 setInputArray={setInputArray}
+                item={item}
               />
             ))}
           </article>

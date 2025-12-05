@@ -21,5 +21,17 @@ const baseUrl = "http://localhost:7000"
     })
 }
 
+const put = async (url: string, data) => {
+    return await fetch(`${baseUrl}${url}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": 'application/json'
+        }
 
-export default {get,post}
+
+    })
+}
+
+
+export default {get,post,put}

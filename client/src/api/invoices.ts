@@ -16,9 +16,9 @@ export const useFetchAllInvoices = () => {
 
 export const useFetchInvoicesById = (id: string) => {
     const { isPending, data, error } = useQuery({
-        queryKey: ['invoices', id],
+        queryKey: ['invoicesById', id],
 
-        queryFn: () => apiService.get(`/invoices/${id}`)
+        queryFn: () => apiService.get(`/invoices/${id}`),
     })
     return { isInvoicePending: isPending, invoiceByIdData: data, error }
 }
@@ -27,8 +27,8 @@ export const useFetchInvoicesById = (id: string) => {
 export const useCreateInvoice = () => {
     const queryClient = useQueryClient()
     const { mutate, isSuccess, isError, error, reset } = useMutation({
-        mutationKey:['createInvoice'],
-        mutationFn: (data) => apiService.post('/invoices/create',data).then(res => res.json()),
+        mutationKey: ['createInvoice'],
+        mutationFn: (data) => apiService.post('/invoices/create', data).then(res => res.json()),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['invoices'] })
         },
@@ -37,3 +37,61 @@ export const useCreateInvoice = () => {
     })
     return { mutate, isSuccess, isError, error, reset }
 }
+
+
+
+export const useUpdateInvoice = (id) => {
+    const queryClient = useQueryClient()
+    const { mutate, isSuccess, isError, error, reset } = useMutation({
+        mutationKey: ['updateInvoice'],
+        mutationFn: (data) => apiService.put(`/invoices/${id}create`, data).then(res => res.json()),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['invoices'] })
+        },
+        onError: (error) => console.log(error)
+
+    })
+    return { mutate, isSuccess, isError, error, reset }
+}
+
+
+// {
+//     "invoiceData": {
+//         "term": "7",
+//             "description": "Internet",
+//                 "invoiceDate": "2025/11/11"
+//     },
+//     "customerData": {
+//         "firstname": "Tom",
+//             "lastname": "Mark",
+//                 "email": "tommark@mail.com"
+//     },
+//     "addressData": {
+//         "street": "1414 Jones av",
+//             "city": "Tokyo",
+//                 "postcode": "TTK100",
+//                     "country": "Japan"
+//     },
+//     "supplierData": {
+//         "street": "14 Good wav",
+//             "city": "Rio de Janeiro",
+//                 "postcode": "BT10 E10",
+//                     "country": "Brazil"
+//     },
+//     "productGroup": [
+//         {
+//             "name": "Web Design",
+//             "price": 1000.00,
+//             "quantity": 4
+//         },
+//         {
+//             "name": "Hosting",
+//             "price": 200.00,
+//             "quantity": 12
+//         },
+//         {
+//             "name": "Domain",
+//             "price": 105.00,
+//             "quantity": 1
+//         }
+//     ]

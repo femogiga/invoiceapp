@@ -1,20 +1,37 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
 import { Trash } from 'lucide-react';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 
-const RowInput = ({ index, onChange, setInputArray, inputArray }) => {
-  const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [price, setPrice] = useState('');
+const RowInput = ({ index, onChange, setInputArray, inputArray, item }) => {
+  const productName = item?.name;
 
-  const handleChange = useCallback(() => {
+  const [name, setName] = useState(item.name);
+  const [quantity, setQuantity] = useState(item?.quantity || '');
+  const [price, setPrice] = useState(item?.price || '');
+  const totalCalc = calculateTotalProductPrice(item.price, item.quantity);
+
+  const total = useMemo(() => {
+    const priceNum = parseFloat(price) || 0;
+    const quantityNum = parseInt(quantity) || 0;
+    return (priceNum * quantityNum).toFixed(2);
+  }, [price, quantity]);
+  // console.log(item)
+  const handleChange = () => {
     const updatedArray = [...inputArray];
     updatedArray[index] = { name, quantity, price };
     setInputArray(updatedArray);
-  }, [inputArray]);
-  console.log(inputArray);
+  };
+  // console.log(inputArray);
 
+  useEffect(() => {
+    const updatedArray = [...inputArray];
+    updatedArray[index] = { name, quantity, price };
+    setInputArray(updatedArray);
+  }, [name, quantity, price, index, setInputArray]);
+
+  console.log(price);
   return (
     <div className='grid grid-cols-8 items-center text-left gap-x-2 gap-y-6 gap-y-6 mb-8'>
       <div className='col-span-full md:col-span-3'>
@@ -41,6 +58,7 @@ const RowInput = ({ index, onChange, setInputArray, inputArray }) => {
           required
           onChange={(e) => {
             setQuantity(e.target.value);
+            setTotal(calculateTotalProductPrice(item.price, item.quantity));
             handleChange();
           }}
           value={quantity}
@@ -55,6 +73,7 @@ const RowInput = ({ index, onChange, setInputArray, inputArray }) => {
           required
           onChange={(e) => {
             setPrice(e.target.value);
+            setTotal(calculateTotalProductPrice(item.price, item.quantity));
             handleChange();
           }}
           value={price}
@@ -65,10 +84,12 @@ const RowInput = ({ index, onChange, setInputArray, inputArray }) => {
         <Input
           id='total'
           type='text'
-          placeholder='1800'
+          placeholder='0'
           disabled
+          name='total'
           className='border-none'
           onChange={(e) => onChange(index, e.target.value)}
+          value={total}
         />
       </div>
       <div className='text-right'>

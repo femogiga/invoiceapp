@@ -176,9 +176,9 @@ export const createNewInvoice = async (req, res, next) => {
     try {
 
 
-        console.log(req.body)
+        // console.log(req.body)
         const { description, term, invoiceDate, fullname, email, customerStreet, customerCity, customerPostcode, customerCountry, supplierId, supplierStreet, supplierCity, supplierPostcode, supplierCountry, productGroup } = req.body
-        console.log({ term, description, invoiceDate })
+        // console.log({ term, description, invoiceDate })
 
         const splittedName = splitName(fullname)
         const firstname = splittedName.firstname
@@ -189,7 +189,7 @@ export const createNewInvoice = async (req, res, next) => {
         const invoiceResult = await db.insert(invoices).values({ term, description, invoiceDate, paymentDate }).returning({ id: invoices.id });
 
         const returnInvoiceId = invoiceResult[0]?.id
-        console.log(returnInvoiceId)
+        // console.log(returnInvoiceId)
         // inserting customer schema
         const customerResult = await db.insert(customers).values({ firstname, lastname,  email }).returning({ id: customers.id });
         const returnedCustomerId = customerResult[0]?.id
@@ -247,7 +247,146 @@ export const createNewInvoice = async (req, res, next) => {
 
 
 
+export const update = async (req, res) => {
+    try {
+        const {
+            invoiceData,
+            customerData,
+            addressData,
+            supplierData,
+            productGroup
+        } = req.body;
+        console.log(invoiceData.invoiceDate);
 
+        const { id } = req.params;
+        const invoiceId = parseInt(id);
 
+        if (isNaN(invoiceId)) {
+            return res.status(400).json({ error: 'Invalid invoice ID' });
+        }
 
-export default { getAll, getById, createNewInvoice }
+        const result = await db.transaction(async (tx) => {
+            const updatedPaymentDate = paymentDueDateCalculator(invoiceData.invoiceDate, invoiceData.term)
+            const updatedInvoiceDataWithTerm = { ...invoiceData, paymentDate: updatedPaymentDate }
+            // 1. Update the invoice itself
+            const [updatedInvoice] = await tx.update(invoices)
+                .set(updatedInvoiceDataWithTerm)
+                .where(eq(invoices.id, invoiceId))
+                .returning();
+
+            if (!updatedInvoice) {
+                throw new Error('Invoice not found');
+            }
+
+            // 2. Get customer ID from invoice-customer relationship
+            const invoiceCustomer = await tx.query.invoicesToCustomers
+                .findFirst({
+                    where: eq(invoicesToCustomers.invoiceId, invoiceId)
+                });
+
+            let customerId = null;
+            if (invoiceCustomer) {
+                customerId = invoiceCustomer.customerId;
+
+                // 3. Update customer data if provided
+                if (customerData) {
+                    await tx.update(customers)
+                        .set(customerData)
+                        .where(eq(customers.id, customerId));
+
+                    // 4. Update customer address if provided
+                    if (addressData) {
+                        await tx.update(addresses)
+                            .set(addressData)
+                            .where(eq(addresses.customerId, customerId));
+                    }
+                }
+
+                // 5. Handle supplier update
+                if (supplierData) {
+                    // Get existing supplier-customer relationship
+                    const supplierCustomer = await tx.query.suppliersToCustomers
+                        .findFirst({
+                            where: eq(suppliersToCustomers.customerId, customerId)
+                        });
+
+                    if (supplierCustomer) {
+                        // Update existing supplier
+                        await tx.update(suppliers)
+                            .set(supplierData)
+                            .where(eq(suppliers.id, supplierCustomer.supplierId));
+                    } else {
+                        // Create new supplier and link to customer
+                        const [newSupplier] = await tx.insert(suppliers)
+                            .values(supplierData)
+                            .returning();
+
+                        await tx.insert(suppliersToCustomers)
+                            .values({
+                                customerId: customerId,
+                                supplierId: newSupplier.id
+                            });
+                    }
+                }
+
+                // 6. Handle product updates
+                if (productGroup && Array.isArray(productGroup)) {
+                    // Remove all existing product relationships for this invoice
+                    await tx.delete(invoicesToProducts)
+                        .where(eq(invoicesToProducts.invoiceId, invoiceId));
+
+                    // Process each product in the group
+                    const productRelations = [];
+
+                    for (const product of productGroup) {
+                        let productId;
+
+                        if (product.productId) {
+                            // 1. Use existing product ID
+                            productId = product.productId;
+                        } else if (product.name && product.price) {
+                            // 2. Create NEW product
+                            const [newProduct] = await tx.insert(products)
+                                .values({
+                                    name: product.name,
+                                    price: product.price
+                                })
+                                .returning({ id: products.id });
+                            productId = newProduct.id;
+                        } else {
+                            throw new Error(`Product must have either productId or name+price`);
+                        }
+
+                        // Add to relationships array
+                        productRelations.push({
+                            invoiceId,
+                            productId,
+                            quantity: product.quantity || 1
+                        });
+                    }
+
+                    // Insert all relationships
+                    if (productRelations.length > 0) {
+                        await tx.insert(invoicesToProducts)
+                            .values(productRelations);
+                    }
+                }
+            }
+
+            return {
+                invoice: updatedInvoice,
+                customerId: customerId
+            };
+        });
+
+        res.status(200).json({
+            message: 'Invoice and all related data updated successfully',
+            ...result
+        });
+
+    } catch (error) {
+        console.error('Update error:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+export default { getAll, getById, createNewInvoice, update }

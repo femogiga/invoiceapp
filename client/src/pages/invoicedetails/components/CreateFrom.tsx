@@ -27,7 +27,6 @@ const CreateFrom = () => {
   };
   const [invoiceData, setInvoiceData] = useState(initialState);
   const [inputArray, setInputArray] = useState<string[]>([]);
-  const [invoiceDateValue, setInvoiceDateValue] = useState();
 
   const { mutate, isSuccess, isError, error, reset } = useCreateInvoice();
   //this initialises and add a new input to the ui
