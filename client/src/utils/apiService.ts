@@ -4,12 +4,12 @@
 const baseUrl = "http://localhost:7000"
 
 
- const get = async (url: string) => {
+const get = async (url: string) => {
     return await fetch(`${baseUrl}${url}`).then(res => res.json()).catch(e => console.error(e))
 }
 
 
- const post = async (url: string, data) => {
+const post = async (url: string, data) => {
     return await fetch(`${baseUrl}${url}`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -33,5 +33,15 @@ const put = async (url: string, data) => {
     })
 }
 
+const remove = async (url: string) => {
+    return await fetch(`${baseUrl}${url}`, {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": 'application/json'
+        }
+    })
+}
 
-export default {get,post,put}
+
+
+export default { get, post, put, remove }

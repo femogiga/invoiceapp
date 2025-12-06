@@ -59,27 +59,26 @@ const CreateFrom = () => {
 
   console.log(invoiceData);
 
-   const getDateFromchild = (childData:any) => {
-     console.log('Got data from child:', childData);
- setInvoiceData((prev) => ({ ...prev, invoiceDate: childData }));
+  const getDateFromchild = (childData: any) => {
+    console.log('Got data from child:', childData);
+    setInvoiceData((prev) => ({ ...prev, invoiceDate: childData }));
 
-     return
-   };
-
+    return;
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
     const createData = {
       ...invoiceData,
-
+      fullname: invoiceData.firstname + ' ' + invoiceData.lastname,
       productGroup: [...inputArray],
     };
-console.log({createData})
+    console.log({ createData });
     mutate(createData, {
-      onSettled: () => {
+      onSuccess: () => {
         // setInvoiceData(initialState);
         // setInputArray([]);
-        // navigate('/invoices');
+         navigate('/invoices');
       },
       onError: () => console.log(error),
     });

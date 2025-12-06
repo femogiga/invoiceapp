@@ -55,9 +55,9 @@ const InvoiceForm = ({
   invoiceData,
   onSubmit,
   onSendDate,
+  invoicesById,
+  onDeleteProduct,
 }) => {
-
-
   return (
     <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
@@ -90,7 +90,7 @@ const InvoiceForm = ({
                     required
                     onChange={onChange}
                     name='supplierCity'
-                    value={invoiceData?.supplierCity || ''}
+                    value={invoiceData?.supplierCity}
                   />
                 </Field>
                 <Field>
@@ -123,18 +123,27 @@ const InvoiceForm = ({
             <FieldGroup>
               <p className='text-left'>Bill To</p>
               <Field>
-                <FieldLabel htmlFor='fullname'>Client's name</FieldLabel>
+                <FieldLabel htmlFor='firstname'>Client's name</FieldLabel>
                 <Input
                   id='fullname'
                   type='text'
                   placeholder='Jane Doe'
                   required
                   onChange={onChange}
-                  name='fullname'
-                  value={genFullname(
-                    invoiceData?.firstname,
-                    invoiceData?.lastname
-                  )}
+                  name='firstname'
+                  value={invoiceData.firstname}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor='lastname'>Client's name</FieldLabel>
+                <Input
+                  id='lastname'
+                  type='text'
+                  placeholder='Jane Doe'
+                  required
+                  onChange={onChange}
+                  name='lastname'
+                  value={invoiceData.lastname}
                 />
               </Field>
               <Field>
@@ -204,7 +213,10 @@ const InvoiceForm = ({
 
             <FieldGroup className='grid grid-cols-2 items center'>
               <Field>
-                <FormCalender onSendDate={onSendDate} />
+                <FormCalender
+                  onSendDate={onSendDate}
+                  invoiceData={invoiceData}
+                />
               </Field>
 
               <Field>
@@ -212,14 +224,14 @@ const InvoiceForm = ({
                 <Select
                   onValueChange={onHandleSelectChange}
                   name='term'
-                  value={invoiceData?.term}
-                  >
+                  defaultValue={invoiceData?.term}
+                  value={invoiceData?.term}>
                   <SelectTrigger className=''>
                     <SelectValue placeholder='Term' />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      <SelectLabel>Term</SelectLabel>
+                      {/* <SelectLabel>Term</SelectLabel> */}
                       <SelectItem value='7'>Next 7 Days</SelectItem>
                       <SelectItem value='14'>Next 14 Days</SelectItem>
                       <SelectItem value='21'>Next 21 Days</SelectItem>
@@ -300,16 +312,19 @@ const InvoiceForm = ({
                 </Button>
               </div>
             </div>
-            {inputArray && inputArray?.map((item, index) => (
-              <RowInput
-                index={index}
-                key={`rowIndex${index}`}
-                onChange={(e) => onChangeInputArray(index, e.target.value)}
-                inputArray={inputArray}
-                setInputArray={setInputArray}
-                item={item}
-              />
-            ))}
+            {inputArray &&
+              inputArray?.map((item, index) => (
+                <RowInput
+                  index={index}
+                  key={`rowIndex${index}`}
+                  onChange={(e) => onChangeInputArray(index, e.target.value)}
+                  inputArray={inputArray}
+                  setInputArray={setInputArray}
+                  item={item}
+                 
+                  productId = {item.id}
+                />
+              ))}
           </article>
 
           <div className='w-full'>

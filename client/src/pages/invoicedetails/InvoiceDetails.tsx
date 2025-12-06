@@ -7,7 +7,9 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Table,
@@ -22,16 +24,18 @@ import { useFetchInvoicesById } from '@/api/invoices';
 import { shortenString } from '@/utils/shortener';
 import { genFullname } from '@/utils/genFullname';
 import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
+import DeleteDialog from './components/DeleteDialog';
 
 const InvoiceDetails = () => {
-  const { id } = useParams()
-  const { invoiceByIdData } = useFetchInvoicesById(id );
+  const { id } = useParams();
+  const { invoiceByIdData } = useFetchInvoicesById(id);
   // console.log({ invoiceByIdData });
-
-  const navigate = useNavigate()
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const navigate = useNavigate();
   const handleEditButtonClick = () => {
-    navigate(`/invoices/${id}/edit`)
-  }
+    navigate(`/invoices/${id}/edit`);
+    window.location.reload();
+  };
   return (
     <main className='col-span-12 md:col-span-10 text-start '>
       <section className='pb-6 mt-4'>
@@ -47,8 +51,11 @@ const InvoiceDetails = () => {
               <StatusBadge status={invoiceByIdData?.status} />
             </div>
             <CardAction className='flex gap-x-4 hidden md:flex'>
-              <Button variant='secondary' onClick={handleEditButtonClick}>Edit</Button>
-              <Button variant='destructive'>Delete</Button>
+              <Button variant='secondary' onClick={handleEditButtonClick}>
+                Edit
+              </Button>
+              {/* <Button variant='destructive'>Delete</Button> */}
+              <DeleteDialog/>
             </CardAction>
           </CardContent>
         </Card>
@@ -150,7 +157,6 @@ const InvoiceDetails = () => {
                         </TableCell>
                       </TableRow>
                     ))}
-
 
                   <TableRow className='bg-black'>
                     <TableCell

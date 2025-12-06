@@ -1,10 +1,23 @@
+import { useDeleteInvoiceProduct } from '@/api/invoices';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
 import { Trash } from 'lucide-react';
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
-const RowInput = ({ index, onChange, setInputArray, inputArray, item }) => {
+const RowInput = ({
+  index,
+  onChange,
+  setInputArray,
+  inputArray,
+  item,
+  //onDeleteProduct,
+  productId,
+}) => {
+  const id = useParams().id;
+  const { deleteProductMutate } = useDeleteInvoiceProduct(id, productId);
+
   const productName = item?.name;
 
   const [name, setName] = useState(item.name);
@@ -30,8 +43,19 @@ const RowInput = ({ index, onChange, setInputArray, inputArray, item }) => {
     updatedArray[index] = { name, quantity, price };
     setInputArray(updatedArray);
   }, [name, quantity, price, index, setInputArray]);
-
-  console.log(price);
+  //console.log(productId)
+  //console.log(price);
+  //  const handleDeleteProduct = () => {
+  //    deleteProductMutate({
+  //      onSuccess: () => {},
+  //      onError: (error) => console.error(error),
+  //    });
+  //  };
+  const handleRemovefromInputArray = (passedIndex) => {
+    const filtered = inputArray.filter((item) => item.name === name);
+    console.log(filtered)
+    setInputArray(filtered);
+  };
   return (
     <div className='grid grid-cols-8 items-center text-left gap-x-2 gap-y-6 gap-y-6 mb-8'>
       <div className='col-span-full md:col-span-3'>
@@ -94,7 +118,10 @@ const RowInput = ({ index, onChange, setInputArray, inputArray, item }) => {
       </div>
       <div className='text-right'>
         <p className='opacity-0 mb-2 md:hidden'>Name</p>
-        <Button variant='ghost' size='icon'>
+        <Button
+          variant='ghost'
+          size='icon'
+          onClick={(name)=>handleRemovefromInputArray(name)}>
           <Trash />
         </Button>
       </div>

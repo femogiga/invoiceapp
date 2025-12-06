@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import InvoiceForm from './InvoiceForm';
-import { useParams } from 'react-router-dom';
-import { useFetchInvoicesById } from '@/api/invoices';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDeleteInvoiceProduct, useFetchInvoicesById, useUpdateInvoice } from '@/api/invoices';
 import { shortenString } from '@/utils/shortener';
 
 const EditForm = ({}) => {
@@ -26,26 +26,25 @@ const EditForm = ({}) => {
     quantity: '',
     productGroup: [{}],
   };
-  const params   = useParams()
-  const  id  = params.id;
+  const params = useParams();
+  const id = params.id;
   // if(!id) return
   const { invoiceByIdData } = useFetchInvoicesById(id);
-  console.log(invoiceByIdData)
+  console.log(invoiceByIdData);
   const heading = 'Edit #' + shortenString(invoiceByIdData?.invoiceId);
-  const [invoiceData, setInvoiceData] = useState(initialState  );
-  const [inputArray, setInputArray] = useState<string[]>(
+  const [invoiceData, setInvoiceData] = useState(initialState);
+  const [inputArray, setInputArray] = useState<string[]>();
 
-  );
-
-
-useEffect(() => {
-  if (invoiceByIdData) {
-    setInvoiceData(invoiceByIdData);
-    setInputArray(invoiceByIdData?.products || []);
-  }
-}, [invoiceByIdData]);
-
- // console.log(inputArray)
+  const { mutate, isPending } = useUpdateInvoice(id);
+const { deleteProductMutate } = useDeleteInvoiceProduct(id);
+  useEffect(() => {
+    if (invoiceByIdData) {
+      setInvoiceData(invoiceByIdData);
+      setInputArray(invoiceByIdData?.products || []);
+    }
+  }, [invoiceByIdData]);
+  const navigate = useNavigate();
+  //console.log(inputArray);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -71,11 +70,75 @@ useEffect(() => {
     setInputArray(updatedInputArray);
   };
 
-  const onSubmit = {}
+
+   const getDateFromchild = (childData: any) => {
+     console.log('Got data from child:', childData);
+     setInvoiceData((prev) => ({ ...prev, invoiceDate: childData }));
+
+     return;
+   };
+console.log(invoiceData.invoiceDate)
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const {
+      term,
+      description,
+      invoiceDate,
+      firstname,
+      lastname,
+      email,
+      customerCity,
+      customerCountry,
+      customerPostcode,
+      customerStreet,
+      supplierCity,
+      supplierCountry,
+      supplierPostcode,
+      supplierStreet,
+    } = invoiceData;
+    const invoicesData = { term, description, invoiceDate: invoiceDate };
+    const customerData = { firstname, lastname, email };
+    const addressData = {
+      street: customerStreet,
+      postcode: customerPostcode,
+      city: customerCity,
+      country: customerCountry,
+    };
+    const supplierData = {
+      street: supplierStreet,
+      postcode: supplierPostcode,
+      city: supplierCity,
+      country: supplierCountry,
+    };
+    const data = {
+      invoicesData,
+      customerData,
+      addressData,
+      supplierData,
+      productGroup: inputArray,
+    };
+
+    console.log(data);
+
+    mutate(data, {
+      onSuccess: () => {
+        navigate(`/invoices/${id}`);
+      },
+      onError: (error) => console.error(error),
+    });
+  };
 
 
+  // const handleDeleteProduct = (productId:number) => {
+  //   deleteProductMutate(productId, {
+  //     onSuccess: () => {
 
-  console.log(invoiceData)
+  //     },
+  //     onError:()=>console.error(error)
+  //   } );
+  // }
+
+  //console.log(invoiceData);
   return (
     <InvoiceForm
       heading={'Edit Invoice'}
@@ -86,8 +149,10 @@ useEffect(() => {
       onChangeInputArray={handleChangeInputArray}
       onHandleSelectChange={handleSelectChange}
       onSubmit={onSubmit}
-      invoiceData={invoiceByIdData}
-      onSendDate={'getDateFromchild'}
+      invoiceData={invoiceData}
+      onSendDate={getDateFromchild}
+      // onDeleteProduct = {handleDeleteProduct}
+
     />
   );
 };

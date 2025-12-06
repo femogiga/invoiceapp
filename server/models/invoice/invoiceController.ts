@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { db } from '../../connections/database/client.ts'
 import { customers, invoices, invoicesToProducts, products, invoicesToProductsRelations, invoicesToCustomers, invoicesToCustomersRelations, suppliersToCustomers, suppliers, addresses } from '../../connections/database/index.ts';
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { paymentDueDateCalculator } from '../../src/util/paymentDueDateCalculator.ts';
 import { splitName } from '../../src/util/splitNames.ts';
 // import { products } from './../../connections/database/schema/product';
@@ -178,7 +178,7 @@ export const createNewInvoice = async (req, res, next) => {
 
         // console.log(req.body)
         const { description, term, invoiceDate, fullname, email, customerStreet, customerCity, customerPostcode, customerCountry, supplierId, supplierStreet, supplierCity, supplierPostcode, supplierCountry, productGroup } = req.body
-        // console.log({ term, description, invoiceDate })
+         console.log({ term, description, invoiceDate })
 
         const splittedName = splitName(fullname)
         const firstname = splittedName.firstname
@@ -250,13 +250,13 @@ export const createNewInvoice = async (req, res, next) => {
 export const update = async (req, res) => {
     try {
         const {
-            invoiceData,
+            invoicesData,
             customerData,
             addressData,
             supplierData,
             productGroup
         } = req.body;
-        console.log(invoiceData.invoiceDate);
+        //console.log(invoicesData.invoiceDate);
 
         const { id } = req.params;
         const invoiceId = parseInt(id);
@@ -266,8 +266,8 @@ export const update = async (req, res) => {
         }
 
         const result = await db.transaction(async (tx) => {
-            const updatedPaymentDate = paymentDueDateCalculator(invoiceData.invoiceDate, invoiceData.term)
-            const updatedInvoiceDataWithTerm = { ...invoiceData, paymentDate: updatedPaymentDate }
+            const updatedPaymentDate = paymentDueDateCalculator(invoicesData.invoiceDate, invoicesData.term)
+            const updatedInvoiceDataWithTerm = { ...invoicesData, paymentDate: updatedPaymentDate }
             // 1. Update the invoice itself
             const [updatedInvoice] = await tx.update(invoices)
                 .set(updatedInvoiceDataWithTerm)
@@ -389,4 +389,45 @@ export const update = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-export default { getAll, getById, createNewInvoice, update }
+
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const { invoiceId, productId } = req.params;
+
+        // Validate parameters
+        const parsedInvoiceId = parseInt(invoiceId);
+        const parsedProductId = parseInt(productId);
+
+        if (isNaN(parsedInvoiceId) || isNaN(parsedProductId)) {
+            return res.status(400).json({ error: 'Invalid invoice or product ID' });
+        }
+
+        // Delete the specific product from the invoice
+        const result = await db.delete(invoicesToProducts)
+            .where(
+                and(
+                    eq(invoicesToProducts.invoiceId, parsedInvoiceId),
+                    eq(invoicesToProducts.productId, parsedProductId)
+                )
+            );
+
+        // Check if anything was deleted
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                error: 'Product not found on this invoice'
+            });
+        }
+
+        res.status(200).json({
+            message: 'Product removed from invoice successfully',
+            invoiceId: parsedInvoiceId,
+            productId: parsedProductId
+        });
+
+    } catch (error) {
+        console.error('Delete product error:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+export default { getAll, getById, createNewInvoice, update, deleteProduct }
