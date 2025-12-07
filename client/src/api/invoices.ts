@@ -70,6 +70,40 @@ export const useDeleteInvoiceProduct = (invoiceId,productId) => {
 }
 
 
+export const useDeleteInvoice = () => {
+    const queryClient = useQueryClient()
+
+    const { mutate, isSuccess, isError, error, reset, isPending } = useMutation({
+        mutationKey: ['deleteInvoice'],
+        mutationFn: (invoiceId) => apiService.remove(`/invoices/${invoiceId}`).then(res => res.json()),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['invoices'] })
+
+        }
+    })
+    return { mutate, isSuccess, isError, error, reset, isPending }
+
+}
+
+
+export const useSetInvoiceStatus = (invoiceId:string) => {
+    const queryClient = useQueryClient()
+
+    const { mutate, isSuccess, isError, error, reset, isPending } = useMutation({
+        mutationKey: ['setInvoiceStatus'],
+        mutationFn: (data) => apiService.put(`/invoices/${invoiceId}`,data).then(res => res.json()),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['invoicesById'] })
+
+        }
+    })
+    return { updateStatusMutation:mutate, isSuccess, isError, error, reset, isPending }
+
+}
+
+
+
+
 
 
 

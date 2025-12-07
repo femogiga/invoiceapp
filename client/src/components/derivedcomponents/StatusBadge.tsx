@@ -6,7 +6,8 @@ interface StatusBadgeProps {
 }
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   return (
-    <div className='flex justify-center items-center border px-4 text-sm  py-1 gap-x-[0.051rem] bg-green-300/30 max-w-22 rounded-sm'>
+    <div className={`flex justify-center items-center border px-4 text-sm  py-1 gap-x-[0.051rem] ${status===  'PAID' ? 'bg-green-500/30' : 'bg-red-500/30'} max-w-22 rounded-sm`
+}>
       <span>
         <Dot />
       </span>

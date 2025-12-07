@@ -58,6 +58,20 @@ const InvoiceForm = ({
   invoicesById,
   onDeleteProduct,
 }) => {
+  // const handleRemovefromInputArray = (name) => {
+  //   const filtered = inputArray.filter((item) => item.name!== name);
+  //   console.log(filtered);
+  //   setInputArray(filtered);
+  // };
+
+   const handleRemovefromInputArray = (indexToRemove) => {
+     console.log('Removing item at index:', indexToRemove);
+     const newArr = inputArray.filter((_, index) => index !== indexToRemove);
+     setInputArray(newArr);
+   };
+  useEffect(() => {
+
+  },[inputArray])
   return (
     <Card className='col-span-12 md:col-span-10'>
       <CardHeader>
@@ -321,8 +335,8 @@ const InvoiceForm = ({
                   inputArray={inputArray}
                   setInputArray={setInputArray}
                   item={item}
-                 
-                  productId = {item.id}
+                  onRemove={() => handleRemovefromInputArray(index)}
+                  productId={item.id}
                 />
               ))}
           </article>

@@ -20,14 +20,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useFetchInvoicesById } from '@/api/invoices';
+import { useFetchInvoicesById, useSetInvoiceStatus } from '@/api/invoices';
 import { shortenString } from '@/utils/shortener';
 import { genFullname } from '@/utils/genFullname';
 import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
 import DeleteDialog from './components/DeleteDialog';
 
 const InvoiceDetails = () => {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id!;
   const { invoiceByIdData } = useFetchInvoicesById(id);
   // console.log({ invoiceByIdData });
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -35,6 +36,22 @@ const InvoiceDetails = () => {
   const handleEditButtonClick = () => {
     navigate(`/invoices/${id}/edit`);
     window.location.reload();
+  };
+
+  const { updateStatusMutation, isSuccess, isError, error, reset, isPending } =
+    useSetInvoiceStatus(id);
+
+  const handleStatusChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const data = { status: 'PAID' };
+    updateStatusMutation(data, {
+      onSuccess: () => {
+        setTimeout(() => navigate(`/invoices`), 3000);
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    });
   };
   return (
     <main className='col-span-12 md:col-span-10 text-start '>
@@ -55,7 +72,12 @@ const InvoiceDetails = () => {
                 Edit
               </Button>
               {/* <Button variant='destructive'>Delete</Button> */}
-              <DeleteDialog/>
+              <DeleteDialog />
+              {invoiceByIdData?.status === 'PENDING' ? (
+                <Button variant='default' onClick={handleStatusChange}>
+                  Mark as Paid
+                </Button>
+              ) : null}
             </CardAction>
           </CardContent>
         </Card>

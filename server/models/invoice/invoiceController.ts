@@ -1,10 +1,11 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { db } from '../../connections/database/client.ts'
 import { customers, invoices, invoicesToProducts, products, invoicesToProductsRelations, invoicesToCustomers, invoicesToCustomersRelations, suppliersToCustomers, suppliers, addresses } from '../../connections/database/index.ts';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import { paymentDueDateCalculator } from '../../src/util/paymentDueDateCalculator.ts';
 import { splitName } from '../../src/util/splitNames.ts';
 // import { products } from './../../connections/database/schema/product';
+import { useParams } from 'react-router-dom';
 
 
 
@@ -76,7 +77,7 @@ export const getAll = async (req, res) => {
                 customers.firstname,
                 customers.lastname
             ).orderBy(
-                invoices.id
+                desc(invoices.status)
             )
 
         console.log(result);
@@ -178,7 +179,7 @@ export const createNewInvoice = async (req, res, next) => {
 
         // console.log(req.body)
         const { description, term, invoiceDate, fullname, email, customerStreet, customerCity, customerPostcode, customerCountry, supplierId, supplierStreet, supplierCity, supplierPostcode, supplierCountry, productGroup } = req.body
-         console.log({ term, description, invoiceDate })
+        //  console.log({ term, description, invoiceDate })
 
         const splittedName = splitName(fullname)
         const firstname = splittedName.firstname
@@ -191,7 +192,7 @@ export const createNewInvoice = async (req, res, next) => {
         const returnInvoiceId = invoiceResult[0]?.id
         // console.log(returnInvoiceId)
         // inserting customer schema
-        const customerResult = await db.insert(customers).values({ firstname, lastname,  email }).returning({ id: customers.id });
+        const customerResult = await db.insert(customers).values({ firstname, lastname, email }).returning({ id: customers.id });
         const returnedCustomerId = customerResult[0]?.id
 
 
@@ -430,4 +431,47 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-export default { getAll, getById, createNewInvoice, update, deleteProduct }
+
+
+
+
+
+export const deleteInvoice = async (req, res) => {
+    const { invoiceId } = req.params
+    try {
+
+
+        await db.transaction(async (tx) => {
+            await tx.delete(invoicesToCustomers).where(eq(invoicesToCustomers.invoiceId, invoiceId))
+            await tx.delete(invoicesToProducts).where(eq(invoicesToProducts.invoiceId, invoiceId))
+            await tx.delete(invoices).where(eq(invoices.id, invoiceId))
+
+        })
+        res.status(200).json({ message: 'invoice succussfully deleted' })
+    }
+    catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'internal server error' })
+
+    }
+
+}
+
+
+export const setInvoiceStatus = async (req, res) => {
+    try {
+        const { invoiceId } = req.params
+        const { status } = req.body
+
+        const result = await db.update(invoices).set({ status: status }).where(eq(invoices.id, invoiceId))
+        res.status(200).json({ message: `invoice status updated to ${status}` })
+
+    }
+    catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'internal server error' })
+
+    }
+
+}
+export default { getAll, getById, createNewInvoice, update, deleteProduct, deleteInvoice, setInvoiceStatus }

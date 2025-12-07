@@ -14,6 +14,7 @@ const RowInput = ({
   item,
   //onDeleteProduct,
   productId,
+  onRemove,
 }) => {
   const id = useParams().id;
   const { deleteProductMutate } = useDeleteInvoiceProduct(id, productId);
@@ -51,11 +52,11 @@ const RowInput = ({
   //      onError: (error) => console.error(error),
   //    });
   //  };
-  const handleRemovefromInputArray = (passedIndex) => {
-    const filtered = inputArray.filter((item) => item.name === name);
-    console.log(filtered)
-    setInputArray(filtered);
-  };
+  // const handleRemovefromInputArray = (passedIndex) => {
+  //   const filtered = inputArray.filter((item) => item.name === name);
+  //   console.log(filtered);
+  //   setInputArray(filtered);
+  // };
   return (
     <div className='grid grid-cols-8 items-center text-left gap-x-2 gap-y-6 gap-y-6 mb-8'>
       <div className='col-span-full md:col-span-3'>
@@ -82,7 +83,7 @@ const RowInput = ({
           required
           onChange={(e) => {
             setQuantity(e.target.value);
-            setTotal(calculateTotalProductPrice(item.price, item.quantity));
+            // setTotal(calculateTotalProductPrice(item.price, item.quantity));
             handleChange();
           }}
           value={quantity}
@@ -97,7 +98,7 @@ const RowInput = ({
           required
           onChange={(e) => {
             setPrice(e.target.value);
-            setTotal(calculateTotalProductPrice(item.price, item.quantity));
+            // setTotal(calculateTotalProductPrice(item.price, item.quantity));
             handleChange();
           }}
           value={price}
@@ -118,10 +119,7 @@ const RowInput = ({
       </div>
       <div className='text-right'>
         <p className='opacity-0 mb-2 md:hidden'>Name</p>
-        <Button
-          variant='ghost'
-          size='icon'
-          onClick={(name)=>handleRemovefromInputArray(name)}>
+        <Button variant='ghost' size='icon' onClick={onRemove}>
           <Trash />
         </Button>
       </div>
