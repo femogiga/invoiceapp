@@ -47,7 +47,7 @@ const HeaderSidebar = () => {
     }
   };
   return (
-    <Menubar className=' flex justify-between border max-w-full min-h-max md:flex-col md:h-dvh  md:max-w-max  col-start-1 col-end-12 md:col-span-1'>
+    <Menubar className=' flex justify-between shadow-none max-w-full min-h-max md:flex-col md:h-dvh  md:max-w-max  col-start-1 col-end-12 md:col-span-1'>
       <div className='bg-red-500 rounded-e-4xl'>
         <img src={Logo} className='p-4 ' />
       </div>

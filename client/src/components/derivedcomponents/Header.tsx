@@ -10,12 +10,12 @@ const Header = () => {
     setNavMenuVisible(!navMenuVisible);
   };
   return (
-    <header className='border flex justify-between items-center relative'>
+    <header className=' flex justify-between items-center relative'>
       <h1 className='sitetitle text-3xl font-bold'>Sonnette</h1>
       {navMenuVisible && (
         <nav
           className={`navigation  absolute right-0 -bottom-52 z-5  md:relative md:bottom-[initial] `}>
-          <ul className='grid gap-y-4 shadow-lg p-4 rounded-sm md:flex Md:justify-between md:gap-x-4 md:items-center md:shadow-none p-0'>
+          <ul className='grid gap-y-4 shadow-sm p-4 rounded-sm md:flex Md:justify-between md:gap-x-4 md:items-center md:shadow-none p-0'>
             <li className='nav'>
               <Link to=''>Explore</Link>
             </li>

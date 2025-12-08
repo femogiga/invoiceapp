@@ -21,22 +21,22 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
   status,
 }) => {
   return (
-    <Card className='w-full max-w-full '>
+    <Card className='w-full max-w-full shadow-none'>
       <CardContent className='grid grid-cols-2  grid-rows-3 justify-items-start items-center gap-x-1  md:flex md:justify-between md:items-center '>
-        <p className='col-start-1 col-end-2 text-xl font-bold mb-4 md:mb-0'>
+        <p className='col-start-1 col-end-2 text-xl font-bold mb-4 md:mb-0 md:w-1/8'>
           #{shortenString(invoiceId)}
         </p>
-        <p className='col-start-1'>
+        <p className='col-start-1 md:w-1/8'>
           <span>Due </span>
           {paymentDate}
         </p>
-        <p className='col-start-2 col-end-3 row-start-1 row-end-2 mb-4 md:mb-0 justify-self-end'>
+        <p className='col-start-2 col-end-3 row-start-1 row-end-2 mb-4 justify-self-end md:mb-0 md:w-2/8'>
           {firstname + ' ' + lastname}
         </p>
-        <p className='col-start-1 text-3xl font-bold align-self-start relative bottom-2 md:bottom-0'>
+        <p className='col-start-1  font-bold align-self-start relative bottom-2 text-end md:bottom-0 md:text-2xl md:w-2/8 '>
           <span>£ </span> {total}
         </p>
-        <div className='flex col-start-2 col-end-3  row-start-2  row-end-4 self-center  items-center gap-x-2 justify-self-end'>
+        <div className='flex col-start-2 col-end-3  row-start-2  row-end-4 self-center  items-center gap-x-2 justify-self-end md:w-2/8 md:justify-end'>
           <StatusBadge status={status} />
           <ChevronRight className='hidden md:block' />
         </div>

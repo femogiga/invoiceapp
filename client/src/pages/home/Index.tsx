@@ -31,7 +31,7 @@ const Index = () => {
   //console.log(totalInvoices.length.toString());
   useEffect(() => { }, [selectedStatusOption]);
   return (
-    <main className=' border col-span-12 md:col-span-10'>
+    <main className='  col-span-12 md:col-span-10'>
       <section className='py-6'>
         <AppFilter
           onChange={handleSelectedStatusOptionChange}

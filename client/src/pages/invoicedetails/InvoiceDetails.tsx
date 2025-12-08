@@ -25,6 +25,7 @@ import { shortenString } from '@/utils/shortener';
 import { genFullname } from '@/utils/genFullname';
 import { calculateTotalProductPrice } from '@/utils/calculateTotalProductPrice';
 import DeleteDialog from './components/DeleteDialog';
+import { useTheme } from '@/components/providers/ThemeProvider';
 
 const InvoiceDetails = () => {
   const params = useParams();
@@ -37,7 +38,7 @@ const InvoiceDetails = () => {
     navigate(`/invoices/${id}/edit`);
     window.location.reload();
   };
-
+  const{theme} = useTheme()
   const { updateStatusMutation, isSuccess, isError, error, reset, isPending } =
     useSetInvoiceStatus(id);
 
@@ -180,7 +181,12 @@ const InvoiceDetails = () => {
                       </TableRow>
                     ))}
 
-                  <TableRow className='bg-black'>
+                  <TableRow
+                    className={
+                      theme === 'light'
+                        ? 'bg-black text-white hover:bg-black'
+                        : 'text-white'
+                    }>
                     <TableCell
                       colSpan={2}
                       className='font-medium col-span-2 px-4 md:px-8'>
