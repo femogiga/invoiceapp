@@ -10,20 +10,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
- const AppSelect = ()=> {
+
+interface IAppSelect {
+  onChange: (value:string) => void;
+}
+ const AppSelect:React.FC<IAppSelect> = ({onChange})=> {
   return (
-    <Select>
+    <Select onValueChange={(value) => onChange(value)}>
       <SelectTrigger className='w-[100px]'>
-        <SelectValue placeholder='Filter' />
+        <SelectValue placeholder='Filter by status' />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value='apple'>Apple</SelectItem>
-          <SelectItem value='banana'>Banana</SelectItem>
-          <SelectItem value='blueberry'>Blueberry</SelectItem>
-          <SelectItem value='grapes'>Grapes</SelectItem>
-          <SelectItem value='pineapple'>Pineapple</SelectItem>
+          <SelectLabel>Filter by status</SelectLabel>
+          <SelectItem value='PENDING'>Pending</SelectItem>
+          <SelectItem value='PAID'>Paid</SelectItem>
+          <SelectItem value='DRAFT'>Draft</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
