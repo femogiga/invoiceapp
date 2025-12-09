@@ -269,61 +269,86 @@ const InvoiceForm = ({
                 />
               </Field>
 
-              <p className='text-left mb-6'>ItemList</p>
+              <p
+                className={`text-left md:mb-6 `}>
+                ItemList
+              </p>
             </FieldGroup>
           </FieldGroup>
 
           <article>
             <div className='grid grid-cols-8 items-center text-left gap-x-2 gap-y-6 mb-6'>
               <div className='col-span-full md:col-span-3'>
-                <p className='mb-2'>Item Name</p>
-                <Input
+                <p
+                  className={` hidden mb-1 ${
+                    inputArray?.length > 0
+                      ? 'md:block'
+                      : 'hidden'
+                  }`}>
+                  Item Name
+                </p>
+                {/* <Input
                   id='name'
                   type='text'
                   placeholder='e.g Brand guidelines'
                   required
                   onChange={onChange}
                   name='name'
-                />
+                /> */}
               </div>
 
               <div className='col-span-2 md:col-span-1'>
-                <p className='mb-2'>Qty</p>
-                <Input
+                <p
+                  className={`mb-1 hidden ${
+                    inputArray?.length > 0 ? 'md:block' : 'hidden'
+                  }`}>
+                  Qty
+                </p>
+                {/* <Input
                   id='quantity'
                   type='text'
                   placeholder='1'
                   required
                   name='quantity'
                   onChange={onChange}
-                />
+                /> */}
               </div>
               <div className='col-span-3 md:col-span-1'>
-                <p className='mb-2'>Price</p>
-                <Input
+                <p
+                  className={`mb-1 hidden ${
+                    inputArray?.length > 0 ? 'md:block' : 'hidden'
+                  }`}>
+                  Price
+                </p>
+                {/* <Input
                   id='price'
                   type='text'
                   placeholder='e.g £100'
                   required
                   name='price'
                   onChange={onChange}
-                />
+                /> */}
               </div>
               <div className='col-span-2'>
-                <p className='mb-2'>Total</p>
-                <Input
+                <p
+                  className={`mb-1 hidden ${
+                    inputArray?.length > 1 ? 'md:block' : 'hidden'
+                  }`}>
+                  Total
+                </p>
+                {/* <Input
                   id='total'
                   type='text'
                   placeholder='1800'
                   disabled
                   className='border-none'
-                />
+                /> */}
               </div>
               <div className='text-right'>
                 <p className='opacity-0 mb-2'>Name</p>
-                <Button variant='ghost' size='icon'>
+                {/* <Button variant='ghost' size='icon'>
                   <Trash />
-                </Button>
+                </Button> */}
               </div>
             </div>
             {inputArray &&

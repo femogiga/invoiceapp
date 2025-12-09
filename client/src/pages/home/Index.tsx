@@ -31,7 +31,7 @@ const Index = () => {
   //console.log(totalInvoices.length.toString());
   useEffect(() => { }, [selectedStatusOption]);
   return (
-    <main className='  col-span-12 md:col-span-10'>
+    <main className='col-span-12 md:col-span-10'>
       <section className='py-6'>
         <AppFilter
           onChange={handleSelectedStatusOptionChange}
@@ -40,7 +40,7 @@ const Index = () => {
         />
       </section>
 
-      <section className='grid gap-y-2'>
+      <section className='grid gap-y-2 '>
         {invoiceData &&
           invoiceData
             .filter((invoice) => {

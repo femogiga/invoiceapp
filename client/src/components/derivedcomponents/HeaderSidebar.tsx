@@ -35,6 +35,7 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from '@/components/ui/menubar';
+import { Link } from 'react-router-dom';
 const HeaderSidebar = () => {
   const { theme, setTheme } = useTheme();
   // console.log(theme);
@@ -47,10 +48,10 @@ const HeaderSidebar = () => {
     }
   };
   return (
-    <Menubar className=' flex justify-between shadow-none max-w-full min-h-max md:flex-col md:h-dvh  md:max-w-max  col-start-1 col-end-12 md:col-span-1'>
-      <div className='bg-red-500 rounded-e-4xl'>
+    <Menubar className=' flex justify-between shadow-none max-w-full min-h-max md:flex-col md:h-dvh  md:max-w-max  col-start-1 col-end-12 md:col-span-1 md:sticky top-[.1rem]  bottom-0'>
+      <Link to="invoices" className='bg-red-500 rounded-e-4xl'>
         <img src={Logo} className='p-4 ' />
-      </div>
+      </Link>
       <div className='flex items-center gap-x-8 md:flex-col md:gap-y-8'>
         <div>
           <Button size='icon' onClick={handleThemeChange}>

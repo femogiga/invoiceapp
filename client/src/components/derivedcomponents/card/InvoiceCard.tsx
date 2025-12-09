@@ -26,7 +26,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({
         <p className='col-start-1 col-end-2 text-xl font-bold mb-4 md:mb-0 md:w-1/8'>
           #{shortenString(invoiceId)}
         </p>
-        <p className='col-start-1 md:w-1/8'>
+        <p className='col-start-1 md:w-2/8'>
           <span>Due </span>
           {paymentDate}
         </p>

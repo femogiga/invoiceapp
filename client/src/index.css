@@ -114,10 +114,23 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+
   }
 }
-#root{
-  padding:0
+
+#root {
+  padding: 0 !important;
+
+
+}
+
+::-webkit-scrollbar{
+  display: none;
+}
+
+@media only screen and (min-width:'768px'){
+
 }
